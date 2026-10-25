@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Secure-Connect Admin</title>
+<style>
+:root{--bg:#f4f7fa;--sf:#fff;--tx:#0e1a2b;--mu:#5a6678;--ac:#0b7a6a;--ac2:#1f5fd6;--on:#fff;--ln:#e0e6ed;--navy:#08162a}
+@media(prefers-color-scheme:dark){:root{--bg:#0a1119;--sf:#111b27;--tx:#e8eef4;--mu:#9aa7b6;--ac:#2fc2a2;--ac2:#6aa5ff;--on:#04201a;--ln:#22303f;--navy:#050b12;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+[hidden]{display:none!important}
+.center{min-height:100vh;display:grid;place-items:center;padding:16px;background:radial-gradient(700px 400px at 90% 0,rgba(31,95,214,.45),transparent 60%),radial-gradient(600px 400px at 0 100%,rgba(11,122,106,.45),transparent 60%),var(--navy)}
+.card{background:var(--sf);border-radius:20px;padding:32px 28px;width:100%;max-width:400px;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.card h2{margin:6px 0 2px}.card .sub{color:var(--mu);margin:0 0 16px;font-size:14px}
+.lg{width:56px;height:56px}
+form,.grid{display:grid;gap:12px;text-align:left}
+label{font-size:13px;color:var(--mu)}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+textarea.mono{font:13px ui-monospace,Menlo,Consolas,monospace}
+input:focus,textarea:focus{outline:2px solid var(--ac);border-color:transparent}
+.btn{border:0;border-radius:9px;padding:10px 18px;background:var(--ac);color:var(--on);font:700 14px inherit;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.g{background:transparent;color:var(--tx);border:1px solid var(--ln)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.err{color:#d33;font-size:13px;min-height:18px}.err.ok{color:var(--ac)}
+header{background:var(--navy);color:#fff}
+.bar{max-width:1000px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.bar .l{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:1px}.bar .lg{width:30px;height:30px}
+.cnt{background:#d33;color:#fff;border-radius:999px;font-size:12px;padding:1px 8px;margin-left:6px}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.tb{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.chip{border:1px solid var(--ln);background:var(--sf);color:var(--tx);border-radius:999px;padding:6px 14px;font:600 13px inherit;font-family:inherit;cursor:pointer}
+.chip.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+.it{border:1px solid var(--ln);border-radius:14px;padding:14px 16px;margin-bottom:10px;background:var(--sf);cursor:pointer}
+.it.nw{border-left:4px solid var(--ac)}
+.it .t{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.it .s{color:var(--mu);font-size:13px}
+.pill{font-size:11px;padding:2px 9px;border-radius:999px;border:1px solid var(--ln);text-transform:uppercase;letter-spacing:.5px}
+.det{margin-top:12px;border-top:1px solid var(--ln);padding-top:12px;cursor:default}.det p{margin:4px 0}.det b{color:var(--mu);font-weight:600}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.sec{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--ac);font-weight:700;margin-top:10px}
+.er{border:1px solid var(--ln);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--sf)}
+.hint{font-size:12px;color:var(--mu)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:14px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;max-width:92%}
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:18px;max-width:420px}
+</style>
+</head>
+<body>
+<div class="center" id="login" hidden>
+ <form class="card" id="lf" autocomplete="on">
+  <svg class="lg" viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d6ae"/><stop offset="1" stop-color="#3b7bf0"/></linearGradient></defs><rect width="34" height="34" rx="9" fill="url(#g)"/><path d="M17 7 8 10.5v7C8 22.5 12 26 17 28z" fill="#d6ecff"/><path d="M17 7l9 3.5v7C26 22.5 22 26 17 28z" fill="#2f86e6"/></svg>
+  <h2>Secure-Connect</h2><p class="sub">Admin login</p>
+  <div><label for="u">Username</label><input id="u" autocomplete="username" required></div>
+  <div><label for="p">Password</label><input id="p" type="password" autocomplete="current-password" required></div>
+  <div class="err" id="le"></div>
+  <button class="btn" type="submit">Sign in</button>
+ </form>
+</div>
+
+<div id="app" hidden>
+ <header><div class="bar">
+  <div class="l"><svg class="lg" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="url(#g)"/><path d="M17 7 8 10.5v7C8 22.5 12 26 17 28z" fill="#d6ecff"/><path d="M17 7l9 3.5v7C26 22.5 22 26 17 28z" fill="#2f86e6"/></svg>ADMIN<span class="cnt" id="cnt" hidden>0</span></div>
+  <div class="tb" style="margin:0"><button class="chip" id="alerts" type="button">Enable alerts</button><button class="chip" id="out" type="button">Logout</button></div>
+ </div></header>
+ <main><div class="tb" id="tabs"></div><div id="view"></div></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+function h(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+async function api(m,u,b){
+ var r=await fetch(u,{method:m,headers:b?{'Content-Type':'application/json'}:{},body:b?JSON.stringify(b):undefined,credentials:'same-origin'});
+ var j={};try{j=await r.json()}catch(e){}
+ if(r.status===401&&u!=='/api/login'&&u!=='/api/admin/password'){showLogin();throw new Error('login')}
+ if(!r.ok)throw new Error(j.error||'Request failed');return j}
+var items=[],site=null,draft=null,view='enq',filt='all',openId=null,es=null,T0=Date.now();
+var TITLE=document.title;
+function showLogin(){$('app').hidden=true;$('login').hidden=false;if(es){es.close();es=null}}
+function when(t){return new Date(t).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}
+function wa(p){var d=(p||'').replace(/\D/g,'');return d.length===10?'91'+d:d}
+function unread(){return items.filter(function(i){return i.status==='new'}).length}
+function badge(){var n=unread(),c=$('cnt');c.textContent=n;c.hidden=!n;document.title=(n?'('+n+') ':'')+TITLE}
+function toast(m){var t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},8000)}
+function beep(){try{var a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.08;o.start();o.stop(a.currentTime+.25)}catch(e){}}
+$('toast').onclick=function(){this.hidden=true;view='enq';render()};
+
+$('lf').onsubmit=async function(e){
+ e.preventDefault();$('le').textContent='';
+ try{await api('POST','/api/login',{username:$('u').value,password:$('p').value});$('p').value='';start()}
+ catch(x){$('le').textContent=x.message}
+};
+$('out').onclick=async function(){try{await api('POST','/api/logout',{})}catch(e){}showLogin()};
+$('alerts').onclick=async function(){
+ if(!('Notification' in window)){toast('This browser does not support alerts');return}
+ var p=await Notification.requestPermission();$('alerts').textContent=p==='granted'?'Alerts on':'Alerts blocked'};
+if('Notification' in window&&Notification.permission==='granted')$('alerts').textContent='Alerts on';
+
+async function start(){
+ try{
+  items=await api('GET','/api/admin/enquiries');
+  site=await (await fetch('/')).text();
+  var m=site.match(/id="site-data">([\s\S]*?)<\/script>/);site=JSON.parse(m[1]);
+ }catch(e){return}
+ $('login').hidden=true;$('app').hidden=false;badge();render();
+ if(es)es.close();
+ es=new EventSource('/api/admin/stream');
+ es.addEventListener('enquiry',function(ev){
+  var it=JSON.parse(ev.data);if(items.some(function(x){return x.id===it.id}))return;
+  items.unshift(it);badge();beep();
+  var msg='New enquiry: '+it.service+' from '+(it.name||'visitor');toast(msg);
+  if('Notification' in window&&Notification.permission==='granted'&&document.hidden)new Notification('Secure-Connect',{body:msg});
+  if(view==='enq')render();
+ });
+}
+
+function render(){
+ var t=$('tabs');t.innerHTML='';
+ [['enq','Enquiries'],['site','Site content'],['pw','Password']].forEach(function(v){
+  var c=h('button','chip'+(view===v[0]?' on':''),v[1]);c.type='button';
+  c.onclick=function(){view=v[0];if(v[0]==='site')draft=JSON.parse(JSON.stringify(site));render()};t.appendChild(c)});
+ var b=$('view');b.innerHTML='';
+ if(view==='site')return renderSite(b);
+ if(view==='pw')return renderPw(b);
+ renderEnq(b);
+}
+function setStatus(id,s){
+ api('POST','/api/admin/status',{id:id,status:s}).then(function(){items.forEach(function(i){if(i.id===id)i.status=s});badge();render()}).catch(function(e){toast(e.message)})}
+function renderEnq(b){
+ var list=items.filter(function(i){return i.status!=='archived'});
+ function m(i,f){return f==='all'||i.status===f}
+ var tb=h('div','tb');
+ [['all','All'],['new','New'],['progress','In progress'],['done','Done']].forEach(function(f){
+  var c=h('button','chip'+(filt===f[0]?' on':''),f[1]+' ('+list.filter(function(i){return m(i,f[0])}).length+')');c.type='button';c.onclick=function(){filt=f[0];render()};tb.appendChild(c)});
+ b.appendChild(tb);
+ var L=list.filter(function(i){return m(i,filt)});
+ if(!L.length)b.appendChild(h('p','hint','No enquiries here yet. New enquiries appear instantly.'));
+ L.forEach(function(i){
+  var s=i.status,card=h('div','it'+(s==='new'?' nw':''));
+  var top=h('div','t');top.appendChild(h('b',null,i.service));top.appendChild(h('span','pill',s==='progress'?'in progress':s));card.appendChild(top);
+  card.appendChild(h('div','s',(i.name||'Unknown')+' · '+(i.phone||'')+' · '+when(i.ts)));
+  card.onclick=function(){openId=openId===i.id?null:i.id;if(s==='new')setStatus(i.id,'read');else render()};
+  if(openId===i.id){
+   var d=h('div','det');d.onclick=function(e){e.stopPropagation()};
+   [['Name',i.name],['Mobile',i.phone],['Email',i.email],['Organisation',i.org],['Prefers',i.pref]].concat((i.fields||[]).map(function(f){return [f.l,f.v]})).forEach(function(p){
+    if(!p[1])return;var q=h('p');q.appendChild(h('b',null,p[0]+': '));q.appendChild(document.createTextNode(p[1]));d.appendChild(q)});
+   var a=h('div','acts');
+   [['progress','In progress'],['done','Mark done'],['archived','Archive']].forEach(function(x){var bt=h('button','btn g sm',x[1]);bt.type='button';bt.onclick=function(){setStatus(i.id,x[0])};a.appendChild(bt)});
+   if(i.phone){var c1=h('a','btn g sm','Call');c1.href='tel:'+i.phone;a.appendChild(c1);var c2=h('a','btn sm','WhatsApp');c2.href='https://wa.me/'+wa(i.phone);c2.target='_blank';c2.rel='noopener';a.appendChild(c2)}
+   if(i.email){var c3=h('a','btn g sm','Email');c3.href='mailto:'+i.email;a.appendChild(c3)}
+   d.appendChild(a);card.appendChild(d)}
+  b.appendChild(card)});
+}
+function hd(t){return h('div','sec',t)}
+function ed(label,val,set,rows,hint,mono){var w=h('div');w.appendChild(h('label',null,label));var e=document.createElement(rows?'textarea':'input');if(rows)e.rows=rows;if(mono)e.className='mono';e.value=val||'';e.oninput=function(){set(e.value)};w.appendChild(e);if(hint)w.appendChild(h('div','hint',hint));return w}
+function btn(t,fn,g){var x=h('button','btn sm'+(g?' g':''),t);x.type='button';x.onclick=fn;return x}
+function renderSite(b){
+ var D=draft;b.appendChild(h('p','hint','Changes go live on your website as soon as you press Save.'));
+ var w=h('div','grid');b.appendChild(w);
+ w.appendChild(hd('Contact details'));
+ w.appendChild(ed('Phone (as shown)',D.phone,function(v){D.phone=v}));
+ w.appendChild(ed('WhatsApp number (digits with country code)',D.whatsapp,function(v){D.whatsapp=v.replace(/\D/g,'')},0,'Example: 919876543210'));
+ w.appendChild(ed('Email',D.email,function(v){D.email=v.trim()}));
+ w.appendChild(ed('Office address',D.address,function(v){D.address=v}));
+ w.appendChild(ed('Working hours',D.hours,function(v){D.hours=v}));
+ w.appendChild(hd('Announcement banner'));
+ w.appendChild(ed('Banner text',D.banner,function(v){D.banner=v},0,'Shown at the top of the site. Leave empty to hide.'));
+ w.appendChild(hd('Home page'));
+ w.appendChild(ed('Small heading',D.hero.eyebrow,function(v){D.hero.eyebrow=v}));
+ w.appendChild(ed('Main headline',D.hero.title,function(v){D.hero.title=v}));
+ w.appendChild(ed('Intro text',D.hero.text,function(v){D.hero.text=v},3));
+ w.appendChild(hd('Frameworks and standards'));
+ w.appendChild(ed('Comma separated',D.tags.join(', '),function(v){D.tags=v.split(',').map(function(x){return x.trim()}).filter(Boolean)}));
+ w.appendChild(hd('FAQ'));
+ D.faqs.forEach(function(f,i){var r=h('div','er');r.appendChild(ed('Question',f.q,function(v){f.q=v}));r.appendChild(ed('Answer',f.a,function(v){f.a=v},3));r.appendChild(btn('Delete',function(){D.faqs.splice(i,1);render()},1));w.appendChild(r)});
+ w.appendChild(btn('+ Add FAQ',function(){D.faqs.push({q:'New question',a:'Answer'});render()},1));
+ Object.keys(D.services).forEach(function(g){
+  w.appendChild(hd('Services: '+g));
+  D.services[g].forEach(function(x,i){var r=h('div','er');
+   r.appendChild(ed('Icon (emoji)',x.ico,function(v){x.ico=v}));
+   r.appendChild(ed('Service name',x.name,function(v){x.name=v}));
+   r.appendChild(ed('Description',x.desc,function(v){x.desc=v},2));
+   r.appendChild(ed('Form questions',x.qs,function(v){x.qs=v},6,'One per line: type|question|options|1 if required. Types: select, text, textarea, date. Separate select options with ;',1));
+   r.appendChild(btn('Delete',function(){D.services[g].splice(i,1);render()},1));w.appendChild(r)});
+  w.appendChild(btn('+ Add service',function(){D.services[g].push({ico:'🔧',name:'New service',desc:'Describe this service.',qs:'textarea|Describe your requirement||1\nselect|Urgency|Normal;Urgent|1'});render()},1));
+ });
+ var msg=h('div','err');var sv=h('button','btn','Save and publish');sv.type='button';
+ sv.onclick=async function(){
+  var names={},bad='';
+  Object.keys(D.services).forEach(function(g){D.services[g].forEach(function(x){if(!x.name.trim())bad='Every service needs a name.';else if(names[x.name])bad='Service names must be unique: '+x.name;names[x.name]=1})});
+  if(bad){msg.className='err';msg.textContent=bad;return}
+  sv.disabled=true;
+  try{await api('PUT','/api/admin/site',D);site=JSON.parse(JSON.stringify(D));msg.className='err ok';msg.textContent='Saved. Your website is updated.'}
+  catch(e){msg.className='err';msg.textContent='Could not save: '+e.message}
+  sv.disabled=false};
+ w.appendChild(sv);w.appendChild(msg);
+}
+function renderPw(b){
+ var bx=h('div','box'),f=h('form','grid');bx.appendChild(f);b.appendChild(bx);
+ var c=h('input'),n=h('input'),n2=h('input');[c,n,n2].forEach(function(i){i.type='password'});c.autocomplete='current-password';n.autocomplete=n2.autocomplete='new-password';
+ [['Current password',c],['New password (min 8 characters)',n],['Repeat new password',n2]].forEach(function(p){var d=h('div');d.appendChild(h('label',null,p[0]));d.appendChild(p[1]);f.appendChild(d)});
+ var er=h('div','err'),go=h('button','btn','Change password');go.type='submit';f.appendChild(er);f.appendChild(go);
+ f.onsubmit=async function(e){e.preventDefault();er.className='err';
+  if(n.value!==n2.value){er.textContent='Passwords do not match.';return}
+  try{await api('POST','/api/admin/password',{current:c.value,next:n.value});alert('Password changed. Please sign in again.');showLogin()}catch(x){er.textContent=x.message}};
+}
+api('GET','/api/admin/me').then(start).catch(function(){showLogin()});
+</script>
+</body>
+</html>

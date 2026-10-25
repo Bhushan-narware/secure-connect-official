@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Secure-Connect – Cyber Security, Digital Forensics &amp; Investigation Services</title>
+<meta name="description" content="VAPT, GRC, security audits, digital forensics, private investigation and background verification.">
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--nav:rgba(255,255,255,.92);--text:#0e1a2b;--muted:#586578;--accent:#0b7a6a;--accent2:#1f5fd6;--on-accent:#fff;--line:#e0e6ed;--navy:#08162a;--shadow:0 12px 32px rgba(14,26,43,.08);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1119;--surface:#111b27;--nav:rgba(10,17,25,.92);--text:#e8eef4;--muted:#9aa7b6;--accent:#2fc2a2;--accent2:#6aa5ff;--on-accent:#04201a;--line:#22303f;--navy:#050b12;--shadow:0 12px 32px rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1119;--surface:#111b27;--nav:rgba(10,17,25,.92);--text:#e8eef4;--muted:#9aa7b6;--accent:#2fc2a2;--accent2:#6aa5ff;--on-accent:#04201a;--line:#22303f;--navy:#050b12;--shadow:0 12px 32px rgba(0,0,0,.4);color-scheme:dark}
+html{scroll-padding-top:calc(72px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--nav);z-index:20}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+/* top bar + nav */
+.top{background:var(--navy);color:#cfd8e3;font-size:13px}
+.top .wrap{display:flex;justify-content:space-between;gap:12px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.top a{text-decoration:none}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--nav);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:1px;text-decoration:none}
+.lg{width:34px;height:34px;flex:none}
+.logo i{font-style:normal;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.links{display:flex;align-items:center;gap:22px;font-size:14px;font-weight:600}
+.links a{text-decoration:none;color:var(--muted)}
+.links a:hover{color:var(--text)}
+.btn{display:inline-block;background:var(--accent);color:var(--on-accent);border:0;border-radius:8px;padding:12px 22px;font:700 14px inherit;font-family:inherit;cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:inherit;border:1px solid var(--line)}
+.btn.light{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
+@media(max-width:760px){.links a:not(.btn){display:none}}
+/* hero */
+.hero{background:radial-gradient(800px 420px at 90% 0,rgba(31,95,214,.4),transparent 60%),radial-gradient(600px 400px at 0 100%,rgba(11,122,106,.4),transparent 60%),var(--navy);color:#f2f6fa;padding:76px 0 88px}
+.hero .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}}
+.eyebrow{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:#6fe0c6;font-weight:700;margin-bottom:12px}
+h1{font-size:clamp(30px,5vw,50px);line-height:1.15;margin:0 0 16px;letter-spacing:-.5px}
+.hero p{opacity:.85;font-size:17px;max-width:560px;margin:0 0 26px}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap}
+.panel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:22px}
+.panel h4{margin:0 0 12px;font-size:14px;letter-spacing:.5px;opacity:.8}
+.panel li{list-style:none;padding:9px 0;border-top:1px solid rgba(255,255,255,.1);font-size:14.5px}
+.panel ul{margin:0;padding:0}
+.panel li::before{content:"✓";color:#6fe0c6;margin-right:10px;font-weight:700}
+/* sections */
+section{padding:72px 0}
+.alt{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.head{max-width:620px;margin-bottom:30px}
+.head .eyebrow{color:var(--accent)}
+h2{font-size:32px;line-height:1.2;margin:0 0 8px;letter-spacing:-.3px}
+.sub{color:var(--muted);margin:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+@media(max-width:820px){.two{grid-template-columns:1fr}}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.facts div{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:18px}
+.facts b{display:block;font-size:15px}
+.facts span{color:var(--muted);font-size:13.5px}
+/* services */
+.tabs{display:inline-flex;gap:4px;margin-bottom:22px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;flex-wrap:wrap}
+.tab{border:0;background:transparent;color:var(--muted);border-radius:999px;padding:9px 20px;cursor:pointer;font:600 14px inherit;font-family:inherit}
+.tab.on{background:var(--accent);color:var(--on-accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;cursor:pointer;display:flex;flex-direction:column;gap:8px;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:var(--bg);border:1px solid var(--line)}
+.card h3{margin:4px 0 0;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.pick{margin-top:auto;padding-top:8px;font-size:13px;color:var(--accent);font-weight:700}
+/* process */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;counter-reset:s}
+.steps div{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:22px 20px}
+.steps div::before{counter-increment:s;content:"0" counter(s);display:block;font-size:28px;font-weight:800;color:var(--accent);margin-bottom:6px}
+.steps b{display:block;margin-bottom:4px}
+.steps span{color:var(--muted);font-size:14px}
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:10px}
+.tags span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600}
+/* faq */
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:700}
+details p{margin:10px 0 0;color:var(--muted);font-size:15px}
+/* cta band + contact */
+.band{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:20px;padding:36px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.band h3{margin:0 0 4px;font-size:24px}
+.band p{margin:0;opacity:.9}
+.band .btn{background:#fff;color:#08162a}
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:30px}
+@media(max-width:820px){.contact{grid-template-columns:1fr}}
+.info div{display:flex;gap:12px;margin-bottom:18px}
+.info i{font-style:normal;font-size:20px}
+.info b{display:block}
+.info span{color:var(--muted);font-size:14px}
+form{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;gap:14px;box-shadow:var(--shadow)}
+label{font-size:13px;color:var(--muted)}
+input,textarea{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit}
+input:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+.chosen{font-size:14px;color:var(--accent);font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.ov{position:fixed;inset:0;background:rgba(5,11,18,.65);z-index:30;display:none;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.ov.on{display:flex}
+.dlg{background:var(--surface);color:var(--text);border-radius:18px;width:100%;max-width:640px;max-height:100%;overflow:auto;padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dh h3{margin:0;font-size:22px}
+.x{border:1px solid var(--line);background:var(--bg);color:var(--text);width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;flex:none}
+.dd{color:var(--muted);font-size:14px;margin:6px 0 16px}
+#dbody{display:grid;gap:14px}
+.fld{display:grid;gap:5px}
+select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit}
+select:focus{outline:2px solid var(--accent);border-color:transparent}
+.sec{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-top:6px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted)}
+.chk input{width:auto;margin-top:4px}
+.note{font-size:12.5px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.err{color:#d33;font-size:13px;min-height:18px}
+.btn[hidden],.bell[hidden],.toast[hidden],footer a[hidden]{display:none}
+.bell{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:15px}
+.bell b{background:#d33;color:#fff;border-radius:999px;font-size:11px;padding:1px 6px;margin-left:6px;display:none}
+.dlg.wide{max-width:900px;height:100%}
+.tb{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;align-items:center}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:999px;padding:6px 14px;font:600 13px inherit;font-family:inherit;cursor:pointer}
+.chip.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.it{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;background:var(--bg);cursor:pointer}
+.it.nw{border-left:4px solid var(--accent)}
+.it .t{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.it .s{color:var(--muted);font-size:13px}
+.pill{font-size:11px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);text-transform:uppercase;letter-spacing:.5px}
+.det{margin-top:12px;border-top:1px solid var(--line);padding-top:12px;font-size:14px;cursor:default}
+.det p{margin:4px 0}
+.det b{color:var(--muted);font-weight:600}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.acts .btn{padding:8px 14px;font-size:13px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(16px + env(safe-area-inset-top,0px));background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;z-index:40;box-shadow:0 10px 30px rgba(0,0,0,.4);font-size:14px;cursor:pointer;max-width:92%}
+.cnt{display:none;background:#d33;color:#fff;border-radius:999px;font-size:12px;padding:1px 8px;vertical-align:middle;margin-left:6px}
+.lgn{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));background:radial-gradient(700px 400px at 90% 0,rgba(31,95,214,.45),transparent 60%),radial-gradient(600px 400px at 0 100%,rgba(11,122,106,.45),transparent 60%),var(--navy);overflow:auto}
+.lgn[hidden]{display:none}
+.lc{background:var(--surface);color:var(--text);border-radius:20px;padding:34px 28px 26px;width:100%;max-width:400px;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.lc .lg{width:60px;height:60px;margin-bottom:10px}
+.lc h2{font-size:24px;margin:0 0 2px}
+.lc .sub{font-size:14px}
+#lbody{display:grid;gap:12px;margin-top:20px;text-align:left}
+#lbody .btn{width:100%}
+.lc .back{display:inline-block;margin-top:18px;font-size:13px;color:var(--muted);text-decoration:none;cursor:pointer}
+.banner{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;text-align:center;padding:9px 16px;font-size:14px;font-weight:600}
+.banner[hidden]{display:none}
+.hint{font-size:12px;color:var(--muted)}
+.er{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--bg)}
+.er .btn{justify-self:start;padding:7px 14px;font-size:13px}
+textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.err.ok{color:var(--accent)}
+/* footer */
+footer{background:var(--navy);color:#b9c4d2;padding:48px 0 20px;font-size:14px}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:28px}
+@media(max-width:820px){.fgrid{grid-template-columns:1fr 1fr}}
+footer h5{color:#fff;margin:0 0 10px;font-size:14px}
+footer a{display:block;text-decoration:none;padding:3px 0}
+footer a:hover{color:#fff}
+.legal{border-top:1px solid rgba(255,255,255,.12);margin-top:28px;padding-top:16px;font-size:12.5px}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:50%;background:#25d366;display:grid;place-items:center;font-size:26px;text-decoration:none;box-shadow:0 8px 20px rgba(0,0,0,.3);z-index:15}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="banner" id="banner" hidden></div>
+<div class="top"><div class="wrap"><span>Confidential consultations · NDA on request</span><span><a href="mailto:you@example.com" id="te">you@example.com</a> &nbsp;|&nbsp; <a href="#" id="tp">+91 99999 99999</a></span></div></div>
+
+<div class="nav"><div class="wrap">
+ <a class="logo" href="#top"><svg class="lg" viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d6ae"/><stop offset="1" stop-color="#3b7bf0"/></linearGradient></defs><rect width="34" height="34" rx="9" fill="url(#lgg)"/><path d="M17 7 8 10.5v7C8 22.5 12 26 17 28z" fill="#d6ecff"/><path d="M17 7l9 3.5v7C26 22.5 22 26 17 28z" fill="#2f86e6"/></svg>SECURE-CONNECT</a>
+ <div class="links"><a href="#about">About</a><a href="#services">Services</a><a href="#process">Approach</a><a href="#faq">FAQ</a><a class="btn" href="#contact">Get a consultation</a></div>
+</div></div>
+
+<div class="hero" id="top"><div class="wrap">
+ <div>
+  <div class="eyebrow" id="hEy">Cyber security · Forensics · Investigation</div>
+  <h1 id="hT">Security you can prove. Answers you can trust.</h1>
+  <p id="hP">We help companies find and fix security gaps, meet compliance requirements, and help individuals get verified facts through lawful digital forensics, investigation and background checks.</p>
+  <div class="cta"><a class="btn" href="#services">View services</a><a class="btn light" href="#contact">Talk to an expert</a></div>
+ </div>
+ <div class="panel">
+  <h4>WHAT WE DELIVER</h4>
+  <ul><li>Penetration testing and VAPT reports</li><li>GRC and audit-readiness programmes</li><li>Forensic data recovery and analysis</li><li>Discreet investigation and verification</li></ul>
+ </div>
+</div></div>
+
+<section id="about" class="alt"><div class="wrap two">
+ <div class="rv">
+  <div class="eyebrow">About us</div>
+  <h2>An independent, discreet and technical team.</h2>
+  <p class="sub">Secure-Connect brings together cyber security assurance and investigative expertise under one roof. Whether you are a business preparing for an audit or an individual who needs facts, every engagement follows the same principles: lawful methods, strict confidentiality and clear documentation.</p>
+ </div>
+ <div class="facts rv">
+  <div><b>Confidential</b><span>NDA on request, need-to-know access only.</span></div>
+  <div><b>Lawful</b><span>Consent-based, compliant with applicable law.</span></div>
+  <div><b>Evidence-grade</b><span>Chain of custody and defensible reporting.</span></div>
+  <div><b>Practical</b><span>Findings with prioritised, actionable fixes.</span></div>
+ </div>
+</div></section>
+
+<section id="services"><div class="wrap">
+ <div class="head rv"><div class="eyebrow">Our services</div><h2>What can we help you with?</h2><p class="sub">Tap any service to open its detailed enquiry form.</p></div>
+ <div class="tabs" id="tabs"></div>
+ <div class="grid" id="grid"></div>
+</div></section>
+
+<section id="process" class="alt"><div class="wrap">
+ <div class="head rv"><div class="eyebrow">Our approach</div><h2>A clear process from first call to final report.</h2></div>
+ <div class="steps rv">
+  <div><b>Consult</b><span>A confidential call to understand your need and constraints.</span></div>
+  <div><b>Scope and quote</b><span>Defined scope, timeline and cost, agreed in writing.</span></div>
+  <div><b>Execute</b><span>Testing, forensics or investigation with careful evidence handling.</span></div>
+  <div><b>Report and support</b><span>Findings, risk ratings, fixes and retest or follow-up support.</span></div>
+ </div>
+</div></section>
+
+<section><div class="wrap two">
+ <div class="rv">
+  <div class="eyebrow">Frameworks and standards</div>
+  <h2>Aligned to the standards that matter.</h2>
+  <p class="sub">Our assessments and compliance work map to widely used frameworks so your results hold up with auditors, customers and regulators.</p>
+ </div>
+ <div class="tags rv" id="tagsBox"></div>
+</div></section>
+
+<section id="faq" class="alt"><div class="wrap">
+ <div class="head rv"><div class="eyebrow">FAQ</div><h2>Common questions</h2></div>
+ <div class="rv" style="max-width:780px" id="faqBox"></div>
+</div></section>
+
+<section><div class="wrap">
+ <div class="band rv"><div><h3>Ready to get started?</h3><p>Book a confidential consultation today.</p></div><a class="btn" href="#contact">Contact us</a></div>
+</div></section>
+
+<section id="contact" style="padding-top:0"><div class="wrap">
+ <div class="head rv"><div class="eyebrow">Contact</div><h2>Let’s talk.</h2><p class="sub">Tell us what you need and we will respond promptly.</p></div>
+ <div class="contact">
+  <div class="info rv">
+   <div><i>📞</i><p style="margin:0"><b>Phone / WhatsApp</b><span id="ph">+91 99999 99999</span></p></div>
+   <div><i>✉️</i><p style="margin:0"><b>Email</b><span id="em2">you@example.com</span></p></div>
+   <div><i>📍</i><p style="margin:0"><b>Office</b><span id="addr">Your office address, City, State, India</span></p></div>
+   <div><i>🕒</i><p style="margin:0"><b>Hours</b><span id="hrs">Mon–Sat, 10:00 – 19:00 IST</span></p></div>
+  </div>
+  <form onsubmit="return false" class="rv">
+   <div class="chosen" id="chosen">General enquiry. For a specific service, tap it in the Services section for a detailed form.</div>
+   <div><label for="n">Your name</label><input id="n" autocomplete="name"></div>
+   <div><label for="o">Organisation (optional)</label><input id="o" autocomplete="organization"></div>
+   <div><label for="m">Brief about your requirement</label><textarea id="m" rows="4"></textarea></div>
+   <div class="row"><button class="btn" id="wa" type="button">Send on WhatsApp</button><button class="btn ghost" id="em" type="button">Send by email</button></div>
+  </form>
+ </div>
+</div></section>
+
+<footer><div class="wrap">
+ <div class="fgrid">
+  <div><a class="logo" href="#top" style="color:#fff;padding:0"><svg class="lg" viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d6ae"/><stop offset="1" stop-color="#3b7bf0"/></linearGradient></defs><rect width="34" height="34" rx="9" fill="url(#lgg)"/><path d="M17 7 8 10.5v7C8 22.5 12 26 17 28z" fill="#d6ecff"/><path d="M17 7l9 3.5v7C26 22.5 22 26 17 28z" fill="#2f86e6"/></svg>SECURE-CONNECT</a><p style="margin-top:12px">Cyber security assurance, digital forensics and investigation services.</p></div>
+  <div><h5>Company</h5><a href="#about">About</a><a href="#process">Approach</a><a href="#faq">FAQ</a></div>
+  <div><h5>Services</h5><a href="#services">VAPT</a><a href="#services">GRC and audits</a><a href="#services">Digital forensics</a><a href="#services">Investigation</a></div>
+  <div><h5>Contact</h5><a href="#contact">Get a consultation</a><span id="fe">you@example.com</span></div>
+ </div>
+ <div class="legal">© <span id="yr"></span> Secure-Connect. All engagements are conducted within applicable law, on a confidential, consent-based basis.</div>
+</div></footer>
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="dt"><div class="dlg">
+ <div class="dh"><h3 id="dt"></h3><button class="x" id="dx" type="button" aria-label="Close">✕</button></div>
+ <p class="dd" id="dd"></p>
+ <div id="dbody"></div>
+ <div class="err" id="derr" style="margin-top:10px"></div>
+ <div class="row"><button class="btn" id="dsub" type="button">Submit enquiry</button><button class="btn ghost" id="dwa" type="button">Send on WhatsApp</button><button class="btn ghost" id="dem" type="button">Send by email</button></div>
+ <p class="note" style="margin-top:14px">Please do not share passwords, OTPs or card numbers in this form. We will ask for documents securely after the first call.</p>
+</div></div>
+<a class="fab" id="fab" href="#" target="_blank" aria-label="WhatsApp">💬</a>
+
+<script type="application/json" id="site-data">
+{
+ "phone": "+91 99999 99999",
+ "whatsapp": "919999999999",
+ "email": "you@example.com",
+ "address": "Your office address, City, State, India",
+ "hours": "Mon–Sat, 10:00 – 19:00 IST",
+ "banner": "",
+ "hero": {
+  "eyebrow": "Cyber security · Forensics · Investigation",
+  "title": "Security you can prove. Answers you can trust.",
+  "text": "We help companies find and fix security gaps, meet compliance requirements, and help individuals get verified facts through lawful digital forensics, investigation and background checks."
+ },
+ "tags": [
+  "ISO 27001",
+  "SOC 2",
+  "OWASP Top 10",
+  "NIST CSF",
+  "PCI DSS",
+  "DPDP Act",
+  "CERT-In guidelines",
+  "CIS Controls"
+ ],
+ "faqs": [
+  {
+   "q": "Is my information kept confidential?",
+   "a": "Yes. We sign an NDA on request and share case details only with people who need them."
+  },
+  {
+   "q": "Do you use only legal methods?",
+   "a": "Yes. All investigations, checks and forensic work are done lawfully and with the required consent or authority."
+  },
+  {
+   "q": "How long does a VAPT or audit take?",
+   "a": "It depends on scope. After a short consultation we share a clear timeline and fixed scope before starting."
+  },
+  {
+   "q": "Will I get a written report?",
+   "a": "Yes. Every engagement ends with a clear report covering findings, risk levels and recommended next steps."
+  }
+ ],
+ "services": {
+  "For individuals": [
+   {
+    "ico": "🔍",
+    "name": "Digital forensics",
+    "desc": "Recovery and analysis of data from phones, computers and cloud accounts, with documented evidence handling.",
+    "qs": "select|What do you need?|Recover deleted data;Examine a phone or computer;Hacked account or device;Evidence for a legal case;Other|1\nselect|Device or source involved|Mobile phone;Laptop or PC;Email, cloud or social account;Pen drive, disk or CCTV;More than one|1\ndate|Approximate incident date||\ntextarea|Describe what happened||1\nselect|Is the report needed for court or police?|Yes;No;Not sure|1\nselect|Urgency|Normal;Urgent (within a few days);Very urgent (24–48 hours)|1"
+   },
+   {
+    "ico": "🕵️",
+    "name": "Private investigation",
+    "desc": "Discreet, lawful fact-finding for personal, family and civil matters.",
+    "qs": "select|Type of matter|Personal or family;Matrimonial;Missing person;Civil dispute;Other lawful matter|1\ntext|City or location of the matter||1\ntextarea|Describe the situation||1\ntextarea|What outcome or information do you need?||1\nselect|Has a police complaint been filed?|Yes;No;Not applicable|\nselect|Urgency|Normal;Urgent (within a few days);Very urgent (24–48 hours)|1"
+   },
+   {
+    "ico": "✅",
+    "name": "Background checks",
+    "desc": "Identity, employment, education and address verification for hiring or personal due diligence.",
+    "qs": "select|Who is being verified?|Job candidate;Existing employee;Tenant or domestic staff;Business partner;Matrimonial match|1\ntext|Number of people||1\nselect|Checks needed|Identity and address;Employment history;Education;Court or criminal records (where lawful);Full package|1\nselect|Has the person given consent?|Yes, consent obtained;Will obtain before starting|1\nselect|Turnaround needed|Standard;Fast (2–3 days)|1"
+   },
+   {
+    "ico": "🚨",
+    "name": "Fraud and scam tracing",
+    "desc": "Help tracing online fraud, impersonation and financial scams.",
+    "qs": "select|Type of fraud|UPI or bank fraud;Investment or crypto scam;Social media impersonation;Loan app harassment;Job or lottery scam;Other|1\ntext|Approximate amount lost (₹)||\ndate|Date of incident||\nselect|Reported to cyber cell or 1930 helpline?|Yes;No;In progress|1\ntextarea|What happened? Include platforms or numbers involved||1"
+   }
+  ],
+  "For companies": [
+   {
+    "ico": "🛡️",
+    "name": "VAPT",
+    "desc": "Vulnerability assessment and penetration testing for web, mobile, network and cloud.",
+    "qs": "select|What should we test?|Web application;Mobile application;API;Network or infrastructure;Cloud;More than one|1\ntext|Number of applications, APIs or IPs||1\nselect|Testing approach|Black box;Grey box;White box;Not sure|1\nselect|Environment|Production;Staging or UAT;Both|1\nselect|Main purpose|Compliance requirement;Customer or tender requirement;Internal security check;After an incident|1\nselect|Expected timeline|Within 2 weeks;Within a month;Flexible|1\ntextarea|Anything else we should know (tech stack, standards)||"
+   },
+   {
+    "ico": "📋",
+    "name": "GRC consulting",
+    "desc": "Governance, risk and compliance programmes aligned to ISO 27001, SOC 2 and DPDP.",
+    "qs": "select|Framework or standard|ISO 27001;SOC 2;DPDP Act readiness;PCI DSS;HIPAA;Not sure|1\nselect|Company size|1–50 employees;51–200;201–1000;1000+|1\nselect|Current stage|Just starting;Policies partly ready;Preparing for audit;Need ongoing support|1\nselect|Certification deadline|Within 3 months;3–6 months;6–12 months;No deadline|1\ntextarea|Notes or specific concerns||"
+   },
+   {
+    "ico": "🧪",
+    "name": "Security audits",
+    "desc": "IT and information-security audits with gap analysis and a remediation roadmap.",
+    "qs": "select|Audit type|IT infrastructure;Information security;Cloud;Application;Vendor or third party|1\ntext|Number of employees and locations||1\nselect|Previous audit done?|Yes, in the last year;Yes, over a year ago;Never|1\nselect|Expected timeline|Within a month;1–3 months;Flexible|1\ntextarea|Notes or specific concerns||"
+   },
+   {
+    "ico": "🏢",
+    "name": "Corporate investigations",
+    "desc": "Misconduct, data-leak and insider-threat inquiries, plus vendor and pre-hire screening.",
+    "qs": "select|Type of matter|Employee misconduct;Data leak;Insider threat;Financial fraud;Vendor or pre-hire screening|1\nselect|Company size|1–50 employees;51–200;201–1000;1000+|1\ntextarea|Brief description (no confidential data)||1\nselect|Are HR or legal teams involved?|Yes;No;Will involve|\nselect|Urgency|Normal;Urgent (within a few days);Very urgent (24–48 hours)|1"
+   }
+  ]
+ }
+}
+</script>
+<script>
+var SITE=JSON.parse(document.getElementById('site-data').textContent);
+var PHONE=SITE.whatsapp,EMAIL=SITE.email;
+var DATA={},FIELDS={};
+function parseQs(t){return String(t||'').split('\n').map(function(l){var p=l.split('|').map(function(x){return x.trim()});if(!p[1])return null;var k={select:'s',text:'t',textarea:'a',date:'d'}[p[0]]||'t',o=(p[2]||'').split(';').map(function(x){return x.trim()}).filter(Boolean);if(k==='s'&&!o.length)k='t';return [k,p[1],k==='s'?o:null,p[3]==='1'?1:0]}).filter(Boolean)}
+Object.keys(SITE.services).forEach(function(g){DATA[g]=SITE.services[g].map(function(x){return [x.ico,x.name,x.desc]});SITE.services[g].forEach(function(x){FIELDS[x.name]=parseQs(x.qs)})});
+function applySite(){
+ var g=function(i){return document.getElementById(i)};
+ var b=g('banner');b.textContent=SITE.banner||'';b.hidden=!SITE.banner;
+ g('hEy').textContent=SITE.hero.eyebrow;g('hT').textContent=SITE.hero.title;g('hP').textContent=SITE.hero.text;
+ g('ph').textContent=SITE.phone;g('tp').textContent=SITE.phone;g('addr').textContent=SITE.address;g('hrs').textContent=SITE.hours;
+ var tg=g('tagsBox');tg.innerHTML='';SITE.tags.forEach(function(t){tg.appendChild(h('span',null,t))});
+ var fq=g('faqBox');fq.innerHTML='';SITE.faqs.forEach(function(f){var d=h('details');d.appendChild(h('summary',null,f.q));d.appendChild(h('p',null,f.a));fq.appendChild(d)});
+}
+var sel={},tab=DATA["For companies"]?"For companies":Object.keys(DATA)[0];
+var tabs=document.getElementById("tabs"),grid=document.getElementById("grid");
+function render(){
+ tabs.innerHTML="";grid.innerHTML="";
+ Object.keys(DATA).forEach(function(t){
+  var b=document.createElement("button");b.className="tab"+(t===tab?" on":"");b.textContent=t;
+  b.onclick=function(){tab=t;render()};tabs.appendChild(b);
+ });
+ DATA[tab].forEach(function(s){
+  var c=document.createElement("div");c.className="card"+(sel[s[1]]?" sel":"");
+  c.innerHTML="<div class=\"ico\"></div><h3></h3><p></p><span class=\"pick\"></span>";
+  c.children[0].textContent=s[0];c.children[1].textContent=s[1];c.children[2].textContent=s[2];
+  c.children[3].textContent="Fill details →";
+  c.onclick=function(){openSvc(s)};
+  grid.appendChild(c);
+ });
+}
+function list(){return Object.keys(sel).filter(function(k){return sel[k]})}
+function upd(){}
+function msg(){
+ var l=list();
+ return "Hello, I found you through your website.\nName: "+document.getElementById("n").value+
+ "\nOrganisation: "+document.getElementById("o").value+
+ "\nServices: "+(l.length?l.join(", "):"General enquiry")+
+ "\nDetails: "+document.getElementById("m").value;
+}
+document.getElementById("wa").onclick=function(){window.open("https://wa.me/"+PHONE+"?text="+encodeURIComponent(msg()),"_blank")};
+document.getElementById("em").onclick=function(){window.location.href="mailto:"+EMAIL+"?subject="+encodeURIComponent("Service enquiry")+"&body="+encodeURIComponent(msg())};
+document.getElementById("fab").href="https://wa.me/"+PHONE;
+document.getElementById("tp").href="https://wa.me/"+PHONE;
+document.getElementById("te").href="mailto:"+EMAIL;document.getElementById("te").textContent=EMAIL;
+document.getElementById("em2").textContent=EMAIL;document.getElementById("fe").textContent=EMAIL;
+document.getElementById("yr").textContent=new Date().getFullYear();
+applySite();
+render();upd();
+var cur=null,ov=document.getElementById("ov"),box=document.getElementById("dbody");
+function fld(id,k,label,o,req){
+ var w=document.createElement("div");w.className="fld";
+ var lb=document.createElement("label");lb.htmlFor=id;lb.textContent=label+(req?" *":"");w.appendChild(lb);
+ var e;
+ if(k==="s"){e=document.createElement("select");var d=document.createElement("option");d.value="";d.textContent="Select…";e.appendChild(d);o.forEach(function(x){var p=document.createElement("option");p.value=x;p.textContent=x;e.appendChild(p)})}
+ else if(k==="a"){e=document.createElement("textarea");e.rows=4}
+ else{e=document.createElement("input");e.type=k==="d"?"date":(k==="p"?"tel":(k==="e"?"email":"text"))}
+ e.id=id;e.dataset.label=label;e.required=!!req;w.appendChild(e);return w;
+}
+function sec(t){var d=document.createElement("div");d.className="sec";d.textContent=t;box.appendChild(d)}
+function openSvc(s){
+ cur=s;box.innerHTML="";document.getElementById("derr").textContent="";
+ document.getElementById("dt").textContent=s[0]+" "+s[1];
+ document.getElementById("dd").textContent=s[2];
+ sec("About your requirement");
+ (FIELDS[s[1]]||[]).forEach(function(x,i){box.appendChild(fld("q"+i,x[0],x[1],x[2],x[3]))});
+ sec("Your contact details");
+ box.appendChild(fld("cn","t","Your name",null,1));
+ box.appendChild(fld("cp","p","Mobile number",null,1));
+ box.appendChild(fld("ce","e","Email",null,0));
+ box.appendChild(fld("co","t","Organisation (if any)",null,0));
+ box.appendChild(fld("cc","s","Preferred way to contact you",["WhatsApp","Phone call","Email"],1));
+ var l=document.createElement("label");l.className="chk";
+ l.innerHTML="<input type=\"checkbox\" id=\"cf\"><span>I confirm the information is accurate, I am authorised to request this service, and it will be used for a lawful purpose.</span>";
+ box.appendChild(l);
+ ov.classList.add("on");document.body.style.overflow="hidden";ov.firstElementChild.scrollTop=0;
+}
+function closeSvc(){ov.classList.remove("on");document.body.style.overflow=""}
+function build(){
+ var fs=box.querySelectorAll("input,select,textarea"),ok=true,first=null,lines=["New enquiry: "+cur[1],""];
+ for(var i=0;i<fs.length;i++){
+  var e=fs[i];
+  if(e.type==="checkbox"){if(!e.checked){ok=false;first=first||e}continue}
+  var v=e.value.trim();
+  if(e.required&&!v){ok=false;first=first||e;e.style.borderColor="#d33"}else{e.style.borderColor=""}
+  if(v)lines.push(e.dataset.label+": "+v);
+ }
+ var er=document.getElementById("derr");
+ if(!ok){first.focus();er.textContent="Please fill the required fields (*) and tick the confirmation.";return null}
+ er.textContent="";return lines.join("\n");
+}
+document.getElementById("dx").onclick=closeSvc;
+ov.addEventListener("click",function(e){if(e.target===ov)closeSvc()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeSvc()});
+document.getElementById("dwa").onclick=function(){var m=build();if(m)window.open("https://wa.me/"+PHONE+"?text="+encodeURIComponent(m),"_blank")};
+document.getElementById("dem").onclick=function(){var m=build();if(m)window.location.href="mailto:"+EMAIL+"?subject="+encodeURIComponent("Enquiry: "+cur[1])+"&body="+encodeURIComponent(m)};
+/* ---- enquiry submit (server API) ---- */
+function h(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function val(id){var e=document.getElementById(id);return e?e.value.trim():''}
+function pairs(){var o=[];box.querySelectorAll('[id^=q]').forEach(function(e){var v=e.value.trim();if(v)o.push({l:e.dataset.label,v:v})});return o}
+function msgBox(t,ok){var e=document.getElementById('derr');e.textContent=t;e.className='err'+(ok?' ok':'')}
+document.getElementById('dsub').onclick=async function(){
+ msgBox('',false);var m=build();if(!m)return;var btn=this;btn.disabled=true;
+ try{
+  var r=await fetch('/api/enquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({service:cur[1],name:val('cn'),phone:val('cp'),email:val('ce'),org:val('co'),pref:val('cc'),fields:pairs()})});
+  if(!r.ok)throw new Error('failed');
+  msgBox('Thank you! Your enquiry has been submitted. We will contact you soon.',true);
+ }catch(e){msgBox('Could not submit right now. Please use WhatsApp or email instead.',false)}
+ btn.disabled=false};
+var els=document.querySelectorAll(".rv");
+if("IntersectionObserver" in window){var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add("in")})}
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "secure-connect",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Secure-Connect website with admin panel and live enquiry notifications",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "express": "^4.19.2" },
+  "engines": { "node": ">=18" }
+}
