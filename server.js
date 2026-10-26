@@ -24,7 +24,10 @@ try { fs.mkdirSync(DATA, { recursive: true }); } catch (e) {}
 const file = n => path.join(DATA, n);
 const load = (n, d) => { 
   try { 
-    return JSON.parse(fs.readFileSync(file(n), 'utf8')); 
+    if (fs.existsSync(file(n))) return JSON.parse(fs.readFileSync(file(n), 'utf8'));
+    const bundled = path.join(__dirname, 'data', n);
+    if (fs.existsSync(bundled)) return JSON.parse(fs.readFileSync(bundled, 'utf8'));
+    return d; 
   } catch { 
     return d; 
   } 
@@ -36,7 +39,14 @@ const save = (n, v) => {
     fs.renameSync(t, file(n)); 
   } catch (e) {
     // Fail-safe for read-only serverless filesystems
-  } 
+  }
+  try {
+    const localDir = path.join(__dirname, 'data');
+    if (localDir !== DATA && fs.existsSync(localDir)) {
+      const localFile = path.join(localDir, n);
+      fs.writeFileSync(localFile, JSON.stringify(v, null, 1));
+    }
+  } catch (e) {}
 };
 
 /* ---------- public page template + site content ---------- */
@@ -71,7 +81,7 @@ site.reel = site.reel || {
   title: 'Client Experience & Security Review',
   subtitle: 'Watch how Secure-Connect helped prevent a major enterprise cyber intrusion.',
   author: 'Rohit Bansal · Director of IT Infrastructure',
-  videoUrl: '',
+  videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
   posterUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=700&q=80',
   stats: '4.9 ★ Rating · 100+ Audits Completed'
 };
