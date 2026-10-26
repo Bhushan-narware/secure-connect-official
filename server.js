@@ -62,16 +62,6 @@ if (!site) site = defaultSite;
 // Default Wallpapers, Feedbacks, and Reel if not present
 site.wallpapers = site.wallpapers || { hero: '', about: '', services: '', process: '', feedback: '', faq: '', cta: '', contact: '' };
 site.wallpaperOpacity = site.wallpaperOpacity || { hero: 80, about: 80, services: 80, process: 80, feedback: 80, faq: 80, cta: 80, contact: 80 };
-site.ads = site.ads || {
-  enabled: true,
-  badge: 'SPONSORED',
-  title: 'Enterprise Cyber Security & Cloud Protection',
-  text: 'Get 20% off on comprehensive Penetration Testing & VAPT audit assessments this month.',
-  btnText: 'Claim Offer',
-  link: '#contact',
-  image: '',
-  html: ''
-};
 site.feedbacks = Array.isArray(site.feedbacks) ? site.feedbacks : [
   { name: 'Aman Singhal', role: 'Head of IT, SecureFin', rating: 5, text: 'Secure-Connect conducted our annual VAPT audit. They identified critical security flaws and guided us through remediations seamlessly. Exceptional reporting!', avatar: '' },
   { name: 'Pooja Kulkarni', role: 'Co-Founder, DataStream', rating: 5, text: 'We consulted Secure-Connect for ISO 27001 readiness. The clarity in documentation and security audits made our compliance 100% stress-free.', avatar: '' },

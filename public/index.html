@@ -33,25 +33,10 @@ a{color:inherit}
 .btn.ghost{background:transparent;color:inherit;border:1px solid var(--line)}
 .btn.light{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
 @media(max-width:760px){.links a:not(.btn){display:none}}
-/* hero & ad slot */
-.hero{background:radial-gradient(800px 420px at 90% 0,rgba(31,95,214,.4),transparent 60%),radial-gradient(600px 400px at 0 100%,rgba(11,122,106,.4),transparent 60%),var(--navy);color:#f2f6fa;padding:48px 0 92px}
-.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;margin-top:24px}
+/* hero */
+.hero{background:radial-gradient(800px 420px at 90% 0,rgba(31,95,214,.4),transparent 60%),radial-gradient(600px 400px at 0 100%,rgba(11,122,106,.4),transparent 60%),var(--navy);color:#f2f6fa;padding:72px 0 92px}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
 @media(max-width:860px){.hero-grid{grid-template-columns:1fr}}
-
-.ad-slot-wrap{margin-bottom:12px}
-.ad-card{position:relative;background:rgba(8,22,42,.7);border:1px solid rgba(47,194,162,.3);border-radius:16px;padding:12px 18px;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.25);transition:border-color .2s}
-.ad-card:hover{border-color:var(--accent)}
-.ad-promo-flex{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-right:24px}
-.ad-info{display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex:1}
-.ad-badge{background:rgba(47,194,162,.15);color:var(--accent);border:1px solid var(--accent);border-radius:999px;font-size:11px;font-weight:700;padding:2px 10px;letter-spacing:.8px;text-transform:uppercase;flex:none}
-.ad-headline{font-size:14px;font-weight:700;color:#fff;margin:0}
-.ad-desc{font-size:12.5px;color:#cfd8e3;margin:0}
-.ad-btn{flex:none;text-decoration:none}
-.ad-img-box{position:relative;display:block;border-radius:12px;overflow:hidden;padding-right:24px}
-.ad-img-box img{width:100%;max-height:120px;object-fit:cover;display:block;border-radius:10px}
-.ad-tag-overlay{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px}
-.ad-close-btn{position:absolute;top:10px;right:12px;background:transparent;border:0;color:#8a99ad;font-size:16px;cursor:pointer;padding:2px 6px;line-height:1}
-.ad-close-btn:hover{color:#fff}
 .eyebrow{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:#6fe0c6;font-weight:700;margin-bottom:12px}
 h1{font-size:clamp(30px,5vw,50px);line-height:1.15;margin:0 0 16px;letter-spacing:-.5px}
 .hero p{opacity:.85;font-size:17px;max-width:560px;margin:0 0 26px}
@@ -239,9 +224,6 @@ footer a:hover{color:#fff}
 </div></div>
 
 <div class="hero" id="top">
- <div class="wrap ad-slot-wrap" id="adSlotWrap" hidden>
-  <div class="ad-card" id="adCard"></div>
- </div>
  <div class="wrap hero-grid">
   <div>
    <div class="eyebrow" id="hEy">Cyber security · Forensics · Investigation</div>
@@ -411,16 +393,6 @@ footer a:hover{color:#fff}
  "address": "Your office address, City, State, India",
  "hours": "Mon–Sat, 10:00 – 19:00 IST",
  "banner": "",
- "ads": {
-  "enabled": true,
-  "badge": "SPONSORED",
-  "title": "Enterprise Cyber Security & Cloud Protection",
-  "text": "Get 20% off on comprehensive Penetration Testing & VAPT audit assessments this month.",
-  "btnText": "Claim Offer",
-  "link": "#contact",
-  "image": "",
-  "html": ""
- },
  "hero": {
   "eyebrow": "Cyber security · Forensics · Investigation",
   "title": "Security you can prove. Answers you can trust.",
@@ -570,7 +542,6 @@ function applySite(){
  applyWallpapers();
  renderFeedbacks();
  renderReel();
- renderAds();
 }
 var sel={},tab=DATA["For companies"]?"For companies":Object.keys(DATA)[0];
 var tabs=document.getElementById("tabs"),grid=document.getElementById("grid");
@@ -754,96 +725,6 @@ function renderReel() {
  if (document.getElementById('reelSub')) document.getElementById('reelSub').textContent = r.subtitle || 'Watch how Secure-Connect protected our enterprise infrastructure.';
  if (document.getElementById('reelAuthor')) document.getElementById('reelAuthor').textContent = r.author || 'Rohit Bansal';
  if (document.getElementById('reelStats')) document.getElementById('reelStats').textContent = r.stats || '4.9 ★ Rating · Verified Reviews';
-}
-
-/* ---- Advertisement Banner Slot ---- */
-function renderAds() {
- var ad = SITE.ads;
- var wrap = document.getElementById('adSlotWrap');
- var card = document.getElementById('adCard');
- if (!wrap || !card) return;
- if (!ad || !ad.enabled) {
-  wrap.hidden = true;
-  return;
- }
- wrap.hidden = false;
- card.innerHTML = '';
- 
- var closeBtn = document.createElement('button');
- closeBtn.className = 'ad-close-btn';
- closeBtn.type = 'button';
- closeBtn.title = 'Dismiss ad';
- closeBtn.innerHTML = '✕';
- closeBtn.onclick = function() { wrap.hidden = true; };
- 
- if (ad.html && ad.html.trim()) {
-  var hb = document.createElement('div');
-  hb.innerHTML = ad.html.trim();
-  card.appendChild(hb);
-  card.appendChild(closeBtn);
-  return;
- }
- 
- if (ad.image && ad.image.trim()) {
-  var al = document.createElement('a');
-  al.href = ad.link || '#contact';
-  if (ad.link && ad.link.indexOf('http') === 0) {
-   al.target = '_blank';
-   al.rel = 'noopener';
-  }
-  al.className = 'ad-img-box';
-  var im = document.createElement('img');
-  im.src = ad.image.trim();
-  im.alt = ad.title || 'Advertisement';
-  var tag = document.createElement('span');
-  tag.className = 'ad-tag-overlay';
-  tag.textContent = ad.badge || 'AD';
-  al.appendChild(im);
-  al.appendChild(tag);
-  card.appendChild(al);
-  card.appendChild(closeBtn);
-  return;
- }
- 
- var flex = document.createElement('div');
- flex.className = 'ad-promo-flex';
- var info = document.createElement('div');
- info.className = 'ad-info';
- 
- var badge = document.createElement('span');
- badge.className = 'ad-badge';
- badge.textContent = ad.badge || 'SPONSORED';
- info.appendChild(badge);
- 
- var tx = document.createElement('div');
- if (ad.title) {
-  var t = document.createElement('p');
-  t.className = 'ad-headline';
-  t.textContent = ad.title;
-  tx.appendChild(t);
- }
- if (ad.text) {
-  var d = document.createElement('p');
-  d.className = 'ad-desc';
-  d.textContent = ad.text;
-  tx.appendChild(d);
- }
- info.appendChild(tx);
- flex.appendChild(info);
- 
- if (ad.btnText || ad.link) {
-  var btn = document.createElement('a');
-  btn.className = 'btn sm ad-btn';
-  btn.href = ad.link || '#contact';
-  if (ad.link && ad.link.indexOf('http') === 0) {
-   btn.target = '_blank';
-   btn.rel = 'noopener';
-  }
-  btn.textContent = ad.btnText || 'Learn More';
-  flex.appendChild(btn);
- }
- card.appendChild(flex);
- card.appendChild(closeBtn);
 }
 
 /* ---- Star Picker & Feedback Submit ---- */

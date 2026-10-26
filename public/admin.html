@@ -461,16 +461,6 @@ function renderSite(b){
   posterUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=700&q=80',
   stats: '4.9 ★ Rating · Verified Reviews'
  };
- D.ads = D.ads || {
-  enabled: true,
-  badge: 'SPONSORED',
-  title: 'Enterprise Cyber Security & Cloud Protection',
-  text: 'Get 20% off on comprehensive Penetration Testing & VAPT audit assessments this month.',
-  btnText: 'Claim Offer',
-  link: '#contact',
-  image: '',
-  html: ''
- };
 
  b.appendChild(h('p','hint','Changes go live on your website as soon as you press Save.'));
  var w=h('div','grid');b.appendChild(w);
@@ -481,16 +471,6 @@ function renderSite(b){
 
  w.appendChild(hd('Announcement banner'));
  w.appendChild(ed('Banner text',D.banner,function(v){D.banner=v},0,'Shown at the top of the site. Leave empty to hide.'));
-
- w.appendChild(hd('📢 Top Hero Advertisement & Promo Ads'));
- w.appendChild(chk('Enable Ad Banner in Hero Area', D.ads.enabled, function(v){ D.ads.enabled = v; }, 'Turn ON to display ad banner above the Hero headline.'));
- w.appendChild(ed('Ad Badge / Tag (e.g. SPONSORED, SPECIAL OFFER, AD)', D.ads.badge||'SPONSORED', function(v){ D.ads.badge = v.trim(); }));
- w.appendChild(ed('Ad Headline / Title', D.ads.title||'', function(v){ D.ads.title = v; }, 0, 'Short headline for promo ad.'));
- w.appendChild(ed('Ad Description / Offer Text', D.ads.text||'', function(v){ D.ads.text = v; }, 2, 'Brief details about the sponsor or deal.'));
- w.appendChild(ed('Ad Button Label', D.ads.btnText||'Learn More', function(v){ D.ads.btnText = v.trim(); }));
- w.appendChild(ed('Ad Click Target (URL or #section)', D.ads.link||'#contact', function(v){ D.ads.link = v.trim(); }, 0, 'Link destination on click (e.g. https://sponsor.com or #contact).'));
- w.appendChild(imgUpload('🖼️ Ad Banner Photo (Optional)', D.ads.image||'', function(v){ D.ads.image = v; }, 'Direct photo upload from PC for graphical banner ad (replaces text promo if set).'));
- w.appendChild(ed('Custom Ad HTML / Script / AdSense Code (Optional)', D.ads.html||'', function(v){ D.ads.html = v; }, 3, 'Paste Google AdSense, iframe, or custom HTML script (overrides default banner if set).', 1));
 
  w.appendChild(hd('Home Page (Hero Section)'));
  w.appendChild(imgUpload('🖼️ Hero Background Wallpaper / Photo',D.wallpapers.hero||'',function(v){D.wallpapers.hero=v},'Direct photo upload from PC. Displays behind headline with dark overlay.',D.wallpaperOpacity.hero!=null?D.wallpaperOpacity.hero:80,function(op){D.wallpaperOpacity.hero=op}));
