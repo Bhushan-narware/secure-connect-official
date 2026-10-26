@@ -217,6 +217,7 @@ footer a:hover{color:#fff}
 </head>
 <body>
 <div class="banner" id="banner" hidden></div>
+<div class="top"><div class="wrap"><span>Confidential consultations · NDA on request</span><span><a href="mailto:you@example.com" id="te">you@example.com</a> &nbsp;|&nbsp; <a href="#" id="tp">+91 99999 99999</a></span></div></div>
 
 <div class="nav"><div class="wrap">
  <a class="logo" href="#top" id="brandLogo"><svg class="lg" id="brandShield" viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d6ae"/><stop offset="1" stop-color="#3b7bf0"/></linearGradient></defs><rect width="34" height="34" rx="9" fill="url(#lgg)"/><path d="M17 7 8 10.5v7C8 22.5 12 26 17 28z" fill="#d6ecff"/><path d="M17 7l9 3.5v7C26 22.5 22 26 17 28z" fill="#2f86e6"/></svg><span id="brandName">SECURE-CONNECT</span></a>
@@ -569,13 +570,14 @@ function msg(){
  "\nServices: "+(l.length?l.join(", "):"General enquiry")+
  "\nDetails: "+document.getElementById("m").value;
 }
-document.getElementById("wa").onclick=function(){window.open("https://wa.me/"+PHONE+"?text="+encodeURIComponent(msg()),"_blank")};
-document.getElementById("em").onclick=function(){window.location.href="mailto:"+EMAIL+"?subject="+encodeURIComponent("Service enquiry")+"&body="+encodeURIComponent(msg())};
-document.getElementById("fab").href="https://wa.me/"+PHONE;
-document.getElementById("tp").href="https://wa.me/"+PHONE;
-document.getElementById("te").href="mailto:"+EMAIL;document.getElementById("te").textContent=EMAIL;
-document.getElementById("em2").textContent=EMAIL;document.getElementById("fe").textContent=EMAIL;
-document.getElementById("yr").textContent=new Date().getFullYear();
+if(document.getElementById("wa"))document.getElementById("wa").onclick=function(){window.open("https://wa.me/"+PHONE+"?text="+encodeURIComponent(msg()),"_blank")};
+if(document.getElementById("em"))document.getElementById("em").onclick=function(){window.location.href="mailto:"+EMAIL+"?subject="+encodeURIComponent("Service enquiry")+"&body="+encodeURIComponent(msg())};
+if(document.getElementById("fab"))document.getElementById("fab").href="https://wa.me/"+PHONE;
+if(document.getElementById("tp"))document.getElementById("tp").href="https://wa.me/"+PHONE;
+if(document.getElementById("te")){document.getElementById("te").href="mailto:"+EMAIL;document.getElementById("te").textContent=EMAIL;}
+if(document.getElementById("em2"))document.getElementById("em2").textContent=EMAIL;
+if(document.getElementById("fe"))document.getElementById("fe").textContent=EMAIL;
+if(document.getElementById("yr"))document.getElementById("yr").textContent=new Date().getFullYear();
 applySite();
 render();upd();
 var cur=null,ov=document.getElementById("ov"),box=document.getElementById("dbody");
