@@ -43,6 +43,12 @@ main{max-width:1000px;margin:0 auto;padding:16px}
 .hint{font-size:12px;color:var(--mu)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);top:14px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;max-width:92%}
 .box{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:18px;max-width:420px}
+.upload-box{border:1px dashed var(--ln);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--sf)}
+.upload-label{font-size:13px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px}
+.upload-preview-wrap{display:flex;align-items:center;gap:12px;min-height:36px;flex-wrap:wrap}
+.upload-preview{max-height:110px;max-width:240px;border-radius:8px;border:1px solid var(--ln);object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.15);display:block}
+.upload-preview-video{max-height:160px;max-width:260px;border-radius:8px;border:1px solid var(--ln);background:#000;box-shadow:0 4px 12px rgba(0,0,0,.15);display:block}
+.upload-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -154,26 +160,364 @@ function renderEnq(b){
 function hd(t){return h('div','sec',t)}
 function ed(label,val,set,rows,hint,mono){var w=h('div');w.appendChild(h('label',null,label));var e=document.createElement(rows?'textarea':'input');if(rows)e.rows=rows;if(mono)e.className='mono';e.value=val||'';e.oninput=function(){set(e.value)};w.appendChild(e);if(hint)w.appendChild(h('div','hint',hint));return w}
 function btn(t,fn,g){var x=h('button','btn sm'+(g?' g':''),t);x.type='button';x.onclick=fn;return x}
+function chk(label,checked,set,hint){var w=h('div');var lbl=document.createElement('label');lbl.style.display='flex';lbl.style.alignItems='center';lbl.style.gap='10px';lbl.style.cursor='pointer';lbl.style.fontWeight='600';var c=document.createElement('input');c.type='checkbox';c.checked=!!checked;c.style.width='18px';c.style.height='18px';c.style.cursor='pointer';c.style.accentColor='var(--ac)';c.onchange=function(){set(c.checked)};lbl.appendChild(c);lbl.appendChild(document.createTextNode(label));w.appendChild(lbl);if(hint)w.appendChild(h('div','hint',hint));return w}
+function compressImg(file, maxWidth, maxHeight, quality, callback) {
+ var reader = new FileReader();
+ reader.onload = function(e) {
+  var img = new Image();
+  img.onload = function() {
+   var w = img.width, h = img.height;
+   var maxW = maxWidth || 1920, maxH = maxHeight || 1080;
+   if (w > maxW || h > maxH) {
+    if (w / maxW > h / maxH) { h = Math.round((h * maxW) / w); w = maxW; }
+    else { w = Math.round((w * maxH) / h); h = maxH; }
+   }
+   var canvas = document.createElement('canvas');
+   canvas.width = w; canvas.height = h;
+   var ctx = canvas.getContext('2d');
+   ctx.drawImage(img, 0, 0, w, h);
+   callback(null, canvas.toDataURL('image/jpeg', quality || 0.82));
+  };
+  img.onerror = function() { callback(new Error('Invalid image file')); };
+  img.src = e.target.result;
+ };
+ reader.onerror = function() { callback(new Error('Failed to read file')); };
+ reader.readAsDataURL(file);
+}
+function imgUpload(label, currentVal, onChange, hint, currentOpacity, onOpacityChange) {
+ var box = h('div', 'upload-box');
+ box.appendChild(h('label', 'upload-label', label));
+ var prevWrap = h('div', 'upload-preview-wrap');
+ prevWrap.style.position = 'relative';
+ prevWrap.style.display = 'inline-block';
+ var img = document.createElement('img');
+ img.className = 'upload-preview';
+ img.alt = 'Preview';
+ var thumbOverlay = document.createElement('div');
+ thumbOverlay.style.position = 'absolute';
+ thumbOverlay.style.inset = '0';
+ thumbOverlay.style.borderRadius = '8px';
+ thumbOverlay.style.pointerEvents = 'none';
+ thumbOverlay.style.transition = 'background .15s';
+ var emptyNotice = h('span', 'hint', '(No image set · using default gradient)');
+ var fileInput = document.createElement('input');
+ fileInput.type = 'file';
+ fileInput.accept = 'image/*';
+ fileInput.style.display = 'none';
+ var upBtn = h('button', 'btn sm', '📁 Upload Photo from PC');
+ upBtn.type = 'button';
+ upBtn.onclick = function() { fileInput.click(); };
+ var status = h('span', 'hint', '');
+ var rmBtn = h('button', 'btn sm g', '🗑️ Remove');
+ rmBtn.type = 'button';
+ var urlInput = document.createElement('input');
+ urlInput.placeholder = 'Or paste image URL (https://...)';
+ urlInput.value = currentVal || '';
+ urlInput.style.fontSize = '12px';
+ var opBox = null, opSlider = null, opBadge = null;
+ var opVal = (currentOpacity !== undefined && currentOpacity !== null && currentOpacity !== '') ? parseInt(currentOpacity, 10) : 80;
+ if (isNaN(opVal)) opVal = 80;
+ function updateOverlayPreview(v) {
+  thumbOverlay.style.background = 'rgba(8, 22, 42, ' + (v / 100) + ')';
+  if (opBadge) {
+   var tag = 'Balanced';
+   if (v < 35) tag = 'Bright (Low Overlay)';
+   else if (v > 65) tag = 'Dark (Text Clear)';
+   opBadge.textContent = v + '% · ' + tag;
+  }
+ }
+ function updatePreview(val) {
+  if (val && val.trim()) {
+   img.src = val.trim();
+   img.hidden = false;
+   thumbOverlay.hidden = false;
+   emptyNotice.hidden = true;
+   rmBtn.hidden = false;
+   if (opBox) opBox.hidden = false;
+   updateOverlayPreview(opVal);
+  } else {
+   img.hidden = true;
+   thumbOverlay.hidden = true;
+   emptyNotice.hidden = false;
+   rmBtn.hidden = true;
+   if (opBox) opBox.hidden = true;
+  }
+ }
+ fileInput.onchange = function() {
+  if (!fileInput.files || !fileInput.files[0]) return;
+  var f = fileInput.files[0];
+  status.textContent = 'Compressing...';
+  compressImg(f, 1920, 1080, 0.82, function(err, dataUrl) {
+   if (err) { status.textContent = 'Error: ' + err.message; return; }
+   status.textContent = '✓ Ready (' + Math.round(dataUrl.length / 1024) + ' KB)';
+   urlInput.value = dataUrl;
+   onChange(dataUrl);
+   updatePreview(dataUrl);
+  });
+ };
+ rmBtn.onclick = function() {
+  fileInput.value = '';
+  urlInput.value = '';
+  status.textContent = 'Removed';
+  onChange('');
+  updatePreview('');
+ };
+ urlInput.oninput = function() {
+  onChange(urlInput.value.trim());
+  updatePreview(urlInput.value.trim());
+ };
+ prevWrap.appendChild(img);
+ prevWrap.appendChild(thumbOverlay);
+ prevWrap.appendChild(emptyNotice);
+ box.appendChild(prevWrap);
+ var acts = h('div', 'upload-actions');
+ acts.appendChild(fileInput);
+ acts.appendChild(upBtn);
+ acts.appendChild(rmBtn);
+ acts.appendChild(status);
+ box.appendChild(acts);
+ var urlWrap = h('div');
+ urlWrap.style.marginTop = '4px';
+ urlWrap.appendChild(urlInput);
+ box.appendChild(urlWrap);
+ if (typeof onOpacityChange === 'function') {
+  opBox = h('div', 'op-box');
+  opBox.style.marginTop = '8px';
+  opBox.style.padding = '10px 12px';
+  opBox.style.borderRadius = '10px';
+  opBox.style.border = '1px solid var(--ln)';
+  opBox.style.background = 'var(--bg)';
+  var opHead = h('div');
+  opHead.style.display = 'flex';
+  opHead.style.justifyContent = 'space-between';
+  opHead.style.alignItems = 'center';
+  opHead.style.marginBottom = '6px';
+  opHead.appendChild(h('span', null, '🌓 Wallpaper Transparency & Darkness (Overlay):'));
+  opBadge = h('span', 'pill', opVal + '% · Dark (Text Clear)');
+  opHead.appendChild(opBadge);
+  opBox.appendChild(opHead);
+  opSlider = document.createElement('input');
+  opSlider.type = 'range';
+  opSlider.min = '5';
+  opSlider.max = '95';
+  opSlider.step = '5';
+  opSlider.value = opVal;
+  opSlider.style.width = '100%';
+  opSlider.style.cursor = 'pointer';
+  opSlider.style.accentColor = 'var(--ac)';
+  opSlider.oninput = function() {
+   opVal = parseInt(opSlider.value, 10);
+   onOpacityChange(opVal);
+   updateOverlayPreview(opVal);
+  };
+  opBox.appendChild(opSlider);
+  var marks = h('div');
+  marks.style.display = 'flex';
+  marks.style.justifyContent = 'space-between';
+  marks.style.fontSize = '11px';
+  marks.style.color = 'var(--mu)';
+  marks.style.marginTop = '4px';
+  marks.appendChild(h('span', null, '☀️ Low Overlay (Bright Photo)'));
+  marks.appendChild(h('span', null, '⚖️ Balanced'));
+  marks.appendChild(h('span', null, '🌙 High Darkness (Text Clear)'));
+  opBox.appendChild(marks);
+  box.appendChild(opBox);
+ }
+ if (hint) box.appendChild(h('div', 'hint', hint));
+ updatePreview(currentVal);
+ return box;
+}
+function videoUpload(label, currentVal, onChange, hint) {
+ var box = h('div', 'upload-box');
+ box.appendChild(h('label', 'upload-label', label));
+ var prevWrap = h('div', 'upload-preview-wrap');
+ var vid = document.createElement('video');
+ vid.className = 'upload-preview-video';
+ vid.controls = true;
+ vid.playsInline = true;
+ var emptyNotice = h('span', 'hint', '(No video set · cover image will be displayed)');
+ var fileInput = document.createElement('input');
+ fileInput.type = 'file';
+ fileInput.accept = 'video/mp4,video/webm';
+ fileInput.style.display = 'none';
+ var upBtn = h('button', 'btn sm', '🎬 Upload Video (MP4 / WebM)');
+ upBtn.type = 'button';
+ upBtn.onclick = function() { fileInput.click(); };
+ var status = h('span', 'hint', '');
+ var rmBtn = h('button', 'btn sm g', '🗑️ Remove video');
+ rmBtn.type = 'button';
+ var urlInput = document.createElement('input');
+ urlInput.placeholder = 'Or direct MP4 / WebM URL (e.g. https://.../reel.mp4)';
+ urlInput.value = currentVal || '';
+ urlInput.style.fontSize = '12px';
+ function updatePreview(val) {
+  if (val && val.trim()) {
+   vid.src = val.trim();
+   vid.hidden = false;
+   emptyNotice.hidden = true;
+   rmBtn.hidden = false;
+  } else {
+   vid.hidden = true;
+   emptyNotice.hidden = false;
+   rmBtn.hidden = true;
+   vid.src = '';
+  }
+ }
+ fileInput.onchange = function() {
+  if (!fileInput.files || !fileInput.files[0]) return;
+  var f = fileInput.files[0];
+  if (f.size > 35 * 1024 * 1024) {
+   alert('Video file is larger than 35MB. Please upload a smaller clip or provide a URL.');
+   return;
+  }
+  status.textContent = 'Loading video (' + Math.round(f.size / 1024 / 1024 * 10) / 10 + ' MB)...';
+  var reader = new FileReader();
+  reader.onload = function(e) {
+   var dataUrl = e.target.result;
+   status.textContent = '✓ Video loaded (' + Math.round(f.size / 1024) + ' KB)';
+   urlInput.value = dataUrl;
+   onChange(dataUrl);
+   updatePreview(dataUrl);
+  };
+  reader.onerror = function() { status.textContent = 'Error reading video'; };
+  reader.readAsDataURL(f);
+ };
+ rmBtn.onclick = function() {
+  fileInput.value = '';
+  urlInput.value = '';
+  status.textContent = 'Removed';
+  onChange('');
+  updatePreview('');
+ };
+ urlInput.oninput = function() {
+  onChange(urlInput.value.trim());
+  updatePreview(urlInput.value.trim());
+ };
+ prevWrap.appendChild(vid);
+ prevWrap.appendChild(emptyNotice);
+ box.appendChild(prevWrap);
+ var acts = h('div', 'upload-actions');
+ acts.appendChild(fileInput);
+ acts.appendChild(upBtn);
+ acts.appendChild(rmBtn);
+ acts.appendChild(status);
+ box.appendChild(acts);
+ var urlWrap = h('div');
+ urlWrap.style.marginTop = '4px';
+ urlWrap.appendChild(urlInput);
+ box.appendChild(urlWrap);
+ if (hint) box.appendChild(h('div', 'hint', hint));
+ updatePreview(currentVal);
+ return box;
+}
 function renderSite(b){
- var D=draft;b.appendChild(h('p','hint','Changes go live on your website as soon as you press Save.'));
+ var D=draft;
+ D.brand = D.brand || 'SECURE-CONNECT';
+ D.tagline = D.tagline || 'Cyber security assurance, digital forensics and investigation services.';
+ D.hero = D.hero || {};
+ if(!Array.isArray(D.hero.deliverables)){
+  D.hero.deliverables = [
+   'Penetration testing and VAPT reports',
+   'GRC and audit-readiness programmes',
+   'Forensic data recovery and analysis',
+   'Discreet investigation and verification'
+  ];
+ }
+ D.about = D.about || {};
+ D.about.eyebrow = D.about.eyebrow || 'About us';
+ D.about.title = D.about.title || 'An independent, discreet and technical team.';
+ D.about.text = D.about.text || 'Secure-Connect brings together cyber security assurance and investigative expertise under one roof. Whether you are a business preparing for an audit or an individual who needs facts, every engagement follows the same principles: lawful methods, strict confidentiality and clear documentation.';
+ if(!Array.isArray(D.about.facts)){
+  D.about.facts = [
+   { b: 'Confidential', s: 'NDA on request, need-to-know access only.' },
+   { b: 'Lawful', s: 'Consent-based, compliant with applicable law.' },
+   { b: 'Evidence-grade', s: 'Chain of custody and defensible reporting.' },
+   { b: 'Practical', s: 'Findings with prioritised, actionable fixes.' }
+  ];
+ }
+ D.approach = D.approach || {};
+ D.approach.eyebrow = D.approach.eyebrow || 'Our approach';
+ D.approach.title = D.approach.title || 'A clear process from first call to final report.';
+ if(!Array.isArray(D.approach.steps)){
+  D.approach.steps = [
+   { b: 'Consult', s: 'A confidential call to understand your need and constraints.' },
+   { b: 'Scope and quote', s: 'Defined scope, timeline and cost, agreed in writing.' },
+   { b: 'Execute', s: 'Testing, forensics or investigation with careful evidence handling.' },
+   { b: 'Report and support', s: 'Findings, risk ratings, fixes and retest or follow-up support.' }
+  ];
+ }
+ D.cta = D.cta || {};
+ D.cta.title = D.cta.title || 'Ready to get started?';
+ D.cta.text = D.cta.text || 'Book a confidential consultation today.';
+ D.cta.btn = D.cta.btn || 'Contact us';
+ D.wallpapers = D.wallpapers || { hero: '', about: '', services: '', process: '', feedback: '', faq: '', cta: '', contact: '' };
+ D.wallpaperOpacity = D.wallpaperOpacity || { hero: 80, about: 80, services: 80, process: 80, feedback: 80, faq: 80, cta: 80, contact: 80 };
+ D.feedbacks = Array.isArray(D.feedbacks) ? D.feedbacks : [];
+ D.reel = D.reel || {
+  title: 'Client Experience & Security Review',
+  subtitle: 'Watch how Secure-Connect protected our enterprise infrastructure.',
+  author: 'Rohit Bansal · Director of IT Infrastructure',
+  videoUrl: '',
+  posterUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=700&q=80',
+  stats: '4.9 ★ Rating · Verified Reviews'
+ };
+ D.ads = D.ads || {
+  enabled: true,
+  badge: 'SPONSORED',
+  title: 'Enterprise Cyber Security & Cloud Protection',
+  text: 'Get 20% off on comprehensive Penetration Testing & VAPT audit assessments this month.',
+  btnText: 'Claim Offer',
+  link: '#contact',
+  image: '',
+  html: ''
+ };
+
+ b.appendChild(h('p','hint','Changes go live on your website as soon as you press Save.'));
  var w=h('div','grid');b.appendChild(w);
- w.appendChild(hd('Contact details'));
- w.appendChild(ed('Phone (as shown)',D.phone,function(v){D.phone=v}));
- w.appendChild(ed('WhatsApp number (digits with country code)',D.whatsapp,function(v){D.whatsapp=v.replace(/\D/g,'')},0,'Example: 919876543210'));
- w.appendChild(ed('Email',D.email,function(v){D.email=v.trim()}));
- w.appendChild(ed('Office address',D.address,function(v){D.address=v}));
- w.appendChild(ed('Working hours',D.hours,function(v){D.hours=v}));
+
+ w.appendChild(hd('Website Brand / Logo'));
+ w.appendChild(ed('Brand / Company Name',D.brand,function(v){D.brand=v.trim()}));
+ w.appendChild(ed('Footer Tagline',D.tagline,function(v){D.tagline=v}));
+
  w.appendChild(hd('Announcement banner'));
  w.appendChild(ed('Banner text',D.banner,function(v){D.banner=v},0,'Shown at the top of the site. Leave empty to hide.'));
- w.appendChild(hd('Home page'));
+
+ w.appendChild(hd('📢 Top Hero Advertisement & Promo Ads'));
+ w.appendChild(chk('Enable Ad Banner in Hero Area', D.ads.enabled, function(v){ D.ads.enabled = v; }, 'Turn ON to display ad banner above the Hero headline.'));
+ w.appendChild(ed('Ad Badge / Tag (e.g. SPONSORED, SPECIAL OFFER, AD)', D.ads.badge||'SPONSORED', function(v){ D.ads.badge = v.trim(); }));
+ w.appendChild(ed('Ad Headline / Title', D.ads.title||'', function(v){ D.ads.title = v; }, 0, 'Short headline for promo ad.'));
+ w.appendChild(ed('Ad Description / Offer Text', D.ads.text||'', function(v){ D.ads.text = v; }, 2, 'Brief details about the sponsor or deal.'));
+ w.appendChild(ed('Ad Button Label', D.ads.btnText||'Learn More', function(v){ D.ads.btnText = v.trim(); }));
+ w.appendChild(ed('Ad Click Target (URL or #section)', D.ads.link||'#contact', function(v){ D.ads.link = v.trim(); }, 0, 'Link destination on click (e.g. https://sponsor.com or #contact).'));
+ w.appendChild(imgUpload('🖼️ Ad Banner Photo (Optional)', D.ads.image||'', function(v){ D.ads.image = v; }, 'Direct photo upload from PC for graphical banner ad (replaces text promo if set).'));
+ w.appendChild(ed('Custom Ad HTML / Script / AdSense Code (Optional)', D.ads.html||'', function(v){ D.ads.html = v; }, 3, 'Paste Google AdSense, iframe, or custom HTML script (overrides default banner if set).', 1));
+
+ w.appendChild(hd('Home Page (Hero Section)'));
+ w.appendChild(imgUpload('🖼️ Hero Background Wallpaper / Photo',D.wallpapers.hero||'',function(v){D.wallpapers.hero=v},'Direct photo upload from PC. Displays behind headline with dark overlay.',D.wallpaperOpacity.hero!=null?D.wallpaperOpacity.hero:80,function(op){D.wallpaperOpacity.hero=op}));
  w.appendChild(ed('Small heading',D.hero.eyebrow,function(v){D.hero.eyebrow=v}));
  w.appendChild(ed('Main headline',D.hero.title,function(v){D.hero.title=v}));
  w.appendChild(ed('Intro text',D.hero.text,function(v){D.hero.text=v},3));
- w.appendChild(hd('Frameworks and standards'));
- w.appendChild(ed('Comma separated',D.tags.join(', '),function(v){D.tags=v.split(',').map(function(x){return x.trim()}).filter(Boolean)}));
- w.appendChild(hd('FAQ'));
- D.faqs.forEach(function(f,i){var r=h('div','er');r.appendChild(ed('Question',f.q,function(v){f.q=v}));r.appendChild(ed('Answer',f.a,function(v){f.a=v},3));r.appendChild(btn('Delete',function(){D.faqs.splice(i,1);render()},1));w.appendChild(r)});
- w.appendChild(btn('+ Add FAQ',function(){D.faqs.push({q:'New question',a:'Answer'});render()},1));
+ w.appendChild(ed('What We Deliver bullets (One per line)',(D.hero.deliverables||[]).join('\n'),function(v){
+  D.hero.deliverables=v.split('\n').map(function(x){return x.trim()}).filter(Boolean);
+ },4));
+
+ w.appendChild(hd('About Us Section'));
+ w.appendChild(imgUpload('🖼️ About Us Background Wallpaper / Photo',D.wallpapers.about||'',function(v){D.wallpapers.about=v},'Direct photo upload for About Us section background.',D.wallpaperOpacity.about!=null?D.wallpaperOpacity.about:80,function(op){D.wallpaperOpacity.about=op}));
+ w.appendChild(ed('About Eyebrow',D.about.eyebrow,function(v){D.about.eyebrow=v}));
+ w.appendChild(ed('About Heading',D.about.title,function(v){D.about.title=v}));
+ w.appendChild(ed('About Description',D.about.text,function(v){D.about.text=v},3));
+ w.appendChild(h('div','hint','Key Facts (4 boxes):'));
+ (D.about.facts||[]).forEach(function(f,i){
+  var r=h('div','er');
+  r.appendChild(ed('Fact Title (e.g. Confidential)',f.b,function(v){f.b=v}));
+  r.appendChild(ed('Fact Subtitle',f.s,function(v){f.s=v}));
+  r.appendChild(btn('Delete Fact',function(){D.about.facts.splice(i,1);render()},1));
+  w.appendChild(r);
+ });
+ w.appendChild(btn('+ Add Fact Box',function(){D.about.facts=D.about.facts||[];D.about.facts.push({b:'New Fact',s:'Description'});render()},1));
+
+ w.appendChild(hd('Services Section & Offerings'));
+ w.appendChild(imgUpload('🖼️ Services Section Background Wallpaper / Photo',D.wallpapers.services||'',function(v){D.wallpapers.services=v},'Direct photo upload for Services background.',D.wallpaperOpacity.services!=null?D.wallpaperOpacity.services:80,function(op){D.wallpaperOpacity.services=op}));
  Object.keys(D.services).forEach(function(g){
   w.appendChild(hd('Services: '+g));
   D.services[g].forEach(function(x,i){var r=h('div','er');
@@ -184,6 +528,68 @@ function renderSite(b){
    r.appendChild(btn('Delete',function(){D.services[g].splice(i,1);render()},1));w.appendChild(r)});
   w.appendChild(btn('+ Add service',function(){D.services[g].push({ico:'🔧',name:'New service',desc:'Describe this service.',qs:'textarea|Describe your requirement||1\nselect|Urgency|Normal;Urgent|1'});render()},1));
  });
+
+ w.appendChild(hd('Our Process / Approach Section'));
+ w.appendChild(imgUpload('🖼️ Our Process Background Wallpaper / Photo',D.wallpapers.process||'',function(v){D.wallpapers.process=v},'Direct photo upload for Process section background.',D.wallpaperOpacity.process!=null?D.wallpaperOpacity.process:80,function(op){D.wallpaperOpacity.process=op}));
+ w.appendChild(ed('Process Eyebrow',D.approach.eyebrow,function(v){D.approach.eyebrow=v}));
+ w.appendChild(ed('Process Heading',D.approach.title,function(v){D.approach.title=v}));
+ (D.approach.steps||[]).forEach(function(st,i){
+  var r=h('div','er');
+  r.appendChild(ed('Step Title (e.g. Consult)',st.b,function(v){st.b=v}));
+  r.appendChild(ed('Step Details',st.s,function(v){st.s=v}));
+  r.appendChild(btn('Delete Step',function(){D.approach.steps.splice(i,1);render()},1));
+  w.appendChild(r);
+ });
+ w.appendChild(btn('+ Add Step',function(){D.approach.steps=D.approach.steps||[];D.approach.steps.push({b:'New Step',s:'Description'});render()},1));
+
+ w.appendChild(hd('Call To Action Banner'));
+ w.appendChild(imgUpload('🖼️ CTA Banner Background Wallpaper / Photo',D.wallpapers.cta||'',function(v){D.wallpapers.cta=v},'Direct photo upload for CTA banner background.',D.wallpaperOpacity.cta!=null?D.wallpaperOpacity.cta:80,function(op){D.wallpaperOpacity.cta=op}));
+ w.appendChild(ed('CTA Headline',D.cta.title,function(v){D.cta.title=v}));
+ w.appendChild(ed('CTA Subtitle',D.cta.text,function(v){D.cta.text=v}));
+ w.appendChild(ed('CTA Button Text',D.cta.btn,function(v){D.cta.btn=v}));
+
+ w.appendChild(hd('⭐ Client Feedback & Testimonials'));
+ w.appendChild(imgUpload('🖼️ Feedback Section Background Wallpaper / Photo',D.wallpapers.feedback||'',function(v){D.wallpapers.feedback=v},'Direct photo upload for Feedback section background.',D.wallpaperOpacity.feedback!=null?D.wallpaperOpacity.feedback:80,function(op){D.wallpaperOpacity.feedback=op}));
+ (D.feedbacks||[]).forEach(function(f,i){
+  var r=h('div','er');
+  r.appendChild(ed('Client Name',f.name,function(v){f.name=v}));
+  r.appendChild(ed('Role / Organisation',f.role,function(v){f.role=v}));
+  r.appendChild(ed('Rating (1 to 5 Stars)',String(f.rating||5),function(v){f.rating=Math.max(1,Math.min(5,parseInt(v,10)||5))}));
+  r.appendChild(ed('Review Text',f.text,function(v){f.text=v},2));
+  r.appendChild(imgUpload('Client Avatar / Photo (Optional)',f.avatar||'',function(v){f.avatar=v},'Direct photo upload for client picture.'));
+  r.appendChild(btn('Delete Review',function(){D.feedbacks.splice(i,1);render()},1));
+  w.appendChild(r);
+ });
+ w.appendChild(btn('+ Add Client Review',function(){
+  D.feedbacks=D.feedbacks||[];
+  D.feedbacks.push({name:'New Client',role:'Security Head, Enterprise',rating:5,text:'Outstanding penetration testing and forensics work.',avatar:''});
+  render();
+ },1));
+
+ w.appendChild(hd('🎬 Feedback Reel Settings'));
+ w.appendChild(videoUpload('🎬 Reel Video (Direct MP4 / WebM Upload or URL)',D.reel.videoUrl||'',function(v){D.reel.videoUrl=v.trim()},'Directly upload MP4/WebM video file from PC or enter direct MP4 URL.'));
+ w.appendChild(imgUpload('🖼️ Reel Cover / Poster Image',D.reel.posterUrl||'',function(v){D.reel.posterUrl=v.trim()},'Direct photo upload for reel thumbnail poster.'));
+ w.appendChild(ed('Reel Headline / Title',D.reel.title,function(v){D.reel.title=v}));
+ w.appendChild(ed('Reel Subtitle / Client Quote',D.reel.subtitle,function(v){D.reel.subtitle=v},2));
+ w.appendChild(ed('Reel Author / Reviewer',D.reel.author,function(v){D.reel.author=v}));
+ w.appendChild(ed('Reel Rating / Stats Tag',D.reel.stats||'4.9 ★ Rating · Verified Reviews',function(v){D.reel.stats=v}));
+
+ w.appendChild(hd('FAQ Section'));
+ w.appendChild(imgUpload('🖼️ FAQ Background Wallpaper / Photo',D.wallpapers.faq||'',function(v){D.wallpapers.faq=v},'Direct photo upload for FAQ section background.',D.wallpaperOpacity.faq!=null?D.wallpaperOpacity.faq:80,function(op){D.wallpaperOpacity.faq=op}));
+ D.faqs.forEach(function(f,i){var r=h('div','er');r.appendChild(ed('Question',f.q,function(v){f.q=v}));r.appendChild(ed('Answer',f.a,function(v){f.a=v},3));r.appendChild(btn('Delete',function(){D.faqs.splice(i,1);render()},1));w.appendChild(r)});
+ w.appendChild(btn('+ Add FAQ',function(){D.faqs.push({q:'New question',a:'Answer'});render()},1));
+
+ w.appendChild(hd('Contact details'));
+ w.appendChild(imgUpload('🖼️ Contact Section Background Wallpaper / Photo',D.wallpapers.contact||'',function(v){D.wallpapers.contact=v},'Direct photo upload for Contact section background.',D.wallpaperOpacity.contact!=null?D.wallpaperOpacity.contact:80,function(op){D.wallpaperOpacity.contact=op}));
+ w.appendChild(ed('Phone (as shown)',D.phone,function(v){D.phone=v}));
+ w.appendChild(ed('WhatsApp number (digits with country code)',D.whatsapp,function(v){D.whatsapp=v.replace(/\D/g,'')},0,'Example: 919876543210'));
+ w.appendChild(ed('Email',D.email,function(v){D.email=v.trim()}));
+ w.appendChild(ed('Office address',D.address,function(v){D.address=v}));
+ w.appendChild(ed('Working hours',D.hours,function(v){D.hours=v}));
+
+ w.appendChild(hd('Frameworks and standards'));
+ w.appendChild(ed('Comma separated',D.tags.join(', '),function(v){D.tags=v.split(',').map(function(x){return x.trim()}).filter(Boolean)}));
+
  var msg=h('div','err');var sv=h('button','btn','Save and publish');sv.type='button';
  sv.onclick=async function(){
   var names={},bad='';
