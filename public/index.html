@@ -166,9 +166,23 @@ footer a:hover{color:#fff}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
 
 /* Wallpaper backgrounds */
-.has-wp{position:relative!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important}
+.has-wp{position:relative!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;color:#f2f6fa!important}
 .has-wp::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,var(--wp-overlay,rgba(8,22,42,.82)),var(--wp-overlay2,rgba(8,22,42,.88)));z-index:1;pointer-events:none}
 .has-wp>*{position:relative;z-index:2}
+.has-wp h1,.has-wp h2,.has-wp h3,.has-wp b{color:#ffffff!important}
+.has-wp .sub,.has-wp p,.has-wp span:not(.pick):not(.pill){color:#e2e8f0!important}
+.has-wp .eyebrow{color:#34d6ae!important}
+.has-wp .facts div{background:rgba(11,23,38,.75)!important;border-color:rgba(255,255,255,.18)!important;backdrop-filter:blur(6px)}
+.has-wp .steps div{background:rgba(11,23,38,.75)!important;border-color:rgba(255,255,255,.18)!important;backdrop-filter:blur(6px)}
+.has-wp .card{background:rgba(11,23,38,.85)!important;border-color:rgba(255,255,255,.18)!important;backdrop-filter:blur(6px)}
+.has-wp .card:hover{border-color:var(--accent)!important}
+.has-wp .ico{background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.2)!important}
+.has-wp details{background:rgba(11,23,38,.85)!important;border-color:rgba(255,255,255,.18)!important}
+.has-wp .tags span{background:rgba(11,23,38,.75)!important;border-color:rgba(255,255,255,.2)!important;color:#ffffff!important}
+.has-wp form{background:rgba(11,23,38,.92)!important;border-color:rgba(255,255,255,.2)!important;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.has-wp form label{color:#cbd5e1!important}
+.has-wp form input,.has-wp form textarea{background:rgba(5,11,18,.8)!important;border-color:rgba(255,255,255,.2)!important;color:#ffffff!important}
+.has-wp .info span{color:#cbd5e1!important}
 
 /* Feedback & Reel */
 .fb-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:start}
