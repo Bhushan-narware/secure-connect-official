@@ -426,6 +426,8 @@ function renderSite(b){
  D.about = D.about || {};
  D.about.eyebrow = D.about.eyebrow || 'About us';
  D.about.title = D.about.title || 'An independent, discreet and technical team.';
+ D.about.orbitEnabled = D.about.orbitEnabled !== false;
+ D.about.orbitSpeed = D.about.orbitSpeed || 22;
  D.about.text = D.about.text || 'Secure-Connect brings together cyber security assurance and investigative expertise under one roof. Whether you are a business preparing for an audit or an individual who needs facts, every engagement follows the same principles: lawful methods, strict confidentiality and clear documentation.';
  if(!Array.isArray(D.about.facts)){
   D.about.facts = [
@@ -450,8 +452,19 @@ function renderSite(b){
  D.cta.title = D.cta.title || 'Ready to get started?';
  D.cta.text = D.cta.text || 'Book a confidential consultation today.';
  D.cta.btn = D.cta.btn || 'Contact us';
- D.wallpapers = D.wallpapers || { hero: '', about: '', services: '', process: '', feedback: '', faq: '', cta: '', contact: '' };
- D.wallpaperOpacity = D.wallpaperOpacity || { hero: 80, about: 80, services: 80, process: 80, feedback: 80, faq: 80, cta: 80, contact: 80 };
+ D.wallpapers = D.wallpapers || { hero: '', about: '', services: '', process: '', frameworks: '', feedback: '', faq: '', cta: '', contact: '', ads: '' };
+ D.ads = D.ads || {};
+ D.ads.enabled = D.ads.enabled !== false;
+ D.ads.autoRotate = D.ads.autoRotate !== false;
+ D.ads.interval = D.ads.interval || 4;
+ if (!Array.isArray(D.ads.items) || !D.ads.items.length) {
+  D.ads.items = [
+    { badge: D.ads.badge || 'EXCLUSIVE DEAL', title: D.ads.title || 'Special Cyber Security & Fraud Investigation Offer', text: D.ads.text || 'Comprehensive Penetration Testing, VAPT audits, and lawful Digital Forensics reporting with actionable fixes.', btnText: D.ads.btnText || 'Claim Deal Now', link: D.ads.link || '#contact', image: D.ads.image || '', html: D.ads.html || '' },
+    { badge: 'LIMITED TIME', title: 'Free Digital Forensics & Investigation Case Assessment', text: 'Discreet and lawful advisory for corporate fraud, device evidence recovery, and defensible court reporting.', btnText: 'Book Consultation', link: '#contact', image: '', html: '' },
+    { badge: 'FEATURED AUDIT', title: 'Cloud Security & ISO 27001 / SOC 2 Compliance Audit', text: 'Get audit-ready in 30 days with comprehensive gap analysis, actionable remediations, and expert support.', btnText: 'Get Protected', link: '#services', image: '', html: '' }
+  ];
+ }
+ D.wallpaperOpacity = D.wallpaperOpacity || { hero: 80, about: 80, services: 80, process: 80, frameworks: 80, feedback: 80, faq: 80, cta: 80, contact: 80, ads: 80 };
  D.feedbacks = Array.isArray(D.feedbacks) ? D.feedbacks : [];
  D.reel = D.reel || {
   title: 'Client Experience & Security Review',
@@ -483,6 +496,8 @@ function renderSite(b){
 
  w.appendChild(hd('About Us Section'));
  w.appendChild(imgUpload('🖼️ About Us Background Wallpaper / Photo',D.wallpapers.about||'',function(v){D.wallpapers.about=v},'Direct photo upload for About Us section background.',D.wallpaperOpacity.about!=null?D.wallpaperOpacity.about:80,function(op){D.wallpaperOpacity.about=op}));
+ w.appendChild(chk('Enable Rotating Cyber Orbit (Hacker & Badges Wheel)', D.about.orbitEnabled !== false, function(v){ D.about.orbitEnabled = v; }, 'Turn ON to display the continuous 360° rotating cyber wheel with hacker and 8 security badges in About Us.'));
+ w.appendChild(ed('Orbit Rotation Speed (Seconds, e.g. 22)', D.about.orbitSpeed || 22, function(v){ D.about.orbitSpeed = parseInt(v, 10) || 22; }, 0, 'Seconds per full 360° rotation (Lower = faster, Higher = slower).'));
  w.appendChild(ed('About Eyebrow',D.about.eyebrow,function(v){D.about.eyebrow=v}));
  w.appendChild(ed('About Heading',D.about.title,function(v){D.about.title=v}));
  w.appendChild(ed('About Description',D.about.text,function(v){D.about.text=v},3));
@@ -495,6 +510,80 @@ function renderSite(b){
   w.appendChild(r);
  });
  w.appendChild(btn('+ Add Fact Box',function(){D.about.facts=D.about.facts||[];D.about.facts.push({b:'New Fact',s:'Description'});render()},1));
+
+ w.appendChild(hd('📢 Ad Posters & Banners (Direct Poster Upload)'));
+ w.appendChild(chk('Enable Ad Posters on Website', D.ads.enabled !== false, function(v){ D.ads.enabled = v; }, 'Turn ON to display auto-scrolling posters between About Us and Services. Turn OFF to hide.'));
+ w.appendChild(imgUpload('🖼️ Ad Section Background Wallpaper (Optional)', D.wallpapers.ads||'', function(v){ D.wallpapers.ads = v; }, 'Direct photo upload for the Ad partition background behind posters.', D.wallpaperOpacity.ads!=null?D.wallpaperOpacity.ads:80, function(op){ D.wallpaperOpacity.ads = op; }));
+
+ w.appendChild(h('div', 'hint', 'Banners & Posters List (Directly upload your pre-made posters here):'));
+ D.ads.items = Array.isArray(D.ads.items) && D.ads.items.length ? D.ads.items : [
+  { image: '', title: 'Poster #1', link: '#contact', badge: 'SPECIAL OFFER' }
+ ];
+
+ D.ads.items.forEach(function(bItem, bIdx){
+  var r = h('div', 'er');
+  r.style.border = '1px solid var(--ln)';
+  r.style.borderRadius = '14px';
+  r.style.padding = '18px';
+  r.style.marginBottom = '16px';
+  r.style.background = 'var(--sf)';
+
+  var headRow = h('div', 'fb-scroll-header');
+  headRow.appendChild(h('b', null, '🖼️ Poster Banner #' + (bIdx + 1) + (bItem.title ? ' — ' + bItem.title : '')));
+  if (D.ads.items.length > 1) {
+   headRow.appendChild(btn('🗑️ Delete Poster', function(){ D.ads.items.splice(bIdx, 1); render(); }, 1));
+  }
+  r.appendChild(headRow);
+
+  // 1. Direct Poster Image Upload (First & Most Prominent)
+  r.appendChild(imgUpload('🖼️ Upload Ready-Made Poster Image (Direct from PC / Phone)', bItem.image || '', function(v){ bItem.image = v; }, 'Upload your ready-made graphic poster (PNG/JPG/WebP). Displays edge-to-edge in full graphic resolution!'));
+
+  // 2. Poster Click Link
+  r.appendChild(ed('🔗 Click Link Target (Optional, where clicking this poster goes)', bItem.link || '#contact', function(v){ bItem.link = v.trim(); }, 0, 'e.g. #contact or WhatsApp link (https://wa.me/...) or your offer URL. Default is #contact.'));
+
+  // 3. Optional Poster Name / Reference
+  r.appendChild(ed('🏷️ Poster Name / Title (Optional reference or badge)', bItem.title || '', function(v){ bItem.title = v.trim(); }, 0, 'e.g. "Diwali 50% Off Offer" or "Enterprise VAPT Poster".'));
+
+  // 4. Advanced: Text backup / Custom HTML
+  var advDetails = document.createElement('details');
+  advDetails.style.marginTop = '8px';
+  advDetails.style.padding = '8px 12px';
+  advDetails.style.borderRadius = '8px';
+  advDetails.style.border = '1px dashed var(--ln)';
+  advDetails.style.fontSize = '13px';
+  var advSummary = document.createElement('summary');
+  advSummary.style.cursor = 'pointer';
+  advSummary.style.fontWeight = '600';
+  advSummary.style.color = 'var(--mu)';
+  advSummary.textContent = '⚙️ Advanced / Text Backup (Only needed if you DO NOT have an image poster)';
+  advDetails.appendChild(advSummary);
+
+  var advBox = h('div');
+  advBox.style.marginTop = '10px';
+  advBox.style.display = 'grid';
+  advBox.style.gap = '8px';
+  advBox.appendChild(ed('Badge Tag (e.g. NEW DEAL, LIMITED TIME)', bItem.badge || 'PROMO', function(v){ bItem.badge = v.trim(); }));
+  advBox.appendChild(ed('Description / Offer Text', bItem.text || '', function(v){ bItem.text = v; }, 2));
+  advBox.appendChild(ed('Button Label', bItem.btnText || 'Claim Deal →', function(v){ bItem.btnText = v.trim(); }));
+  advBox.appendChild(ed('Custom HTML / Google AdSense (Optional)', bItem.html || '', function(v){ bItem.html = v; }, 2, 'Paste custom embed or AdSense code.', 1));
+  advDetails.appendChild(advBox);
+  r.appendChild(advDetails);
+
+  w.appendChild(r);
+ });
+
+ w.appendChild(btn('➕ Add Another Poster Banner (Upload New Poster)', function(){
+  D.ads.items.push({
+   image: '',
+   title: 'New Poster Offer',
+   link: '#contact',
+   badge: 'EXCLUSIVE OFFER',
+   text: '',
+   btnText: 'Claim Deal Now',
+   html: ''
+  });
+  render();
+ }, 1));
 
  w.appendChild(hd('Services Section & Offerings'));
  w.appendChild(imgUpload('🖼️ Services Section Background Wallpaper / Photo',D.wallpapers.services||'',function(v){D.wallpapers.services=v},'Direct photo upload for Services background.',D.wallpaperOpacity.services!=null?D.wallpaperOpacity.services:80,function(op){D.wallpaperOpacity.services=op}));
@@ -567,8 +656,9 @@ function renderSite(b){
  w.appendChild(ed('Office address',D.address,function(v){D.address=v}));
  w.appendChild(ed('Working hours',D.hours,function(v){D.hours=v}));
 
- w.appendChild(hd('Frameworks and standards'));
- w.appendChild(ed('Comma separated',D.tags.join(', '),function(v){D.tags=v.split(',').map(function(x){return x.trim()}).filter(Boolean)}));
+ w.appendChild(hd('Frameworks and Standards Section'));
+ w.appendChild(imgUpload('🖼️ Frameworks & Standards Background Wallpaper / Photo',D.wallpapers.frameworks||'',function(v){D.wallpapers.frameworks=v},'Direct photo upload for Frameworks & Standards section background.',D.wallpaperOpacity.frameworks!=null?D.wallpaperOpacity.frameworks:80,function(op){D.wallpaperOpacity.frameworks=op}));
+ w.appendChild(ed('Frameworks and standards (Comma separated)',D.tags.join(', '),function(v){D.tags=v.split(',').map(function(x){return x.trim()}).filter(Boolean)}));
 
  var msg=h('div','err');var sv=h('button','btn','Save and publish');sv.type='button';
  sv.onclick=async function(){

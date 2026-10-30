@@ -62,6 +62,12 @@ try {
 } catch (e) {
   console.error('Could not load admin.html:', e.message);
 }
+const getIndexHtml = () => {
+  try { return fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8'); } catch (e) { return tpl; }
+};
+const getAdminHtml = () => {
+  try { return fs.readFileSync(path.join(__dirname, 'public', 'admin.html'), 'utf8'); } catch (e) { return adminHtml; }
+};
 
 const re = /(<script type="application\/json" id="site-data">)([\s\S]*?)(<\/script>)/;
 const m = tpl.match(re);
@@ -70,8 +76,25 @@ let site = load('site.json', defaultSite);
 if (!site) site = defaultSite;
 
 // Default Wallpapers, Feedbacks, and Reel if not present
-site.wallpapers = site.wallpapers || { hero: '', about: '', services: '', process: '', feedback: '', faq: '', cta: '', contact: '' };
-site.wallpaperOpacity = site.wallpaperOpacity || { hero: 80, about: 80, services: 80, process: 80, feedback: 80, faq: 80, cta: 80, contact: 80 };
+site.wallpapers = site.wallpapers || { hero: '', about: '', services: '', process: '', frameworks: '', feedback: '', faq: '', cta: '', contact: '', ads: '' };
+site.ads = site.ads || {
+  enabled: true,
+  autoRotate: true,
+  interval: 4,
+  badge: 'EXCLUSIVE DEAL',
+  title: 'Special Cyber Security & Fraud Investigation Offer',
+  text: 'Comprehensive Penetration Testing, VAPT audits, and lawful Digital Forensics reporting with actionable fixes.',
+  btnText: 'Claim Deal Now',
+  link: '#contact',
+  image: '',
+  html: '',
+  items: [
+    { badge: 'EXCLUSIVE DEAL', title: 'Special Cyber Security & Fraud Investigation Offer', text: 'Comprehensive Penetration Testing, VAPT audits, and lawful Digital Forensics reporting with actionable fixes.', btnText: 'Claim Deal Now', link: '#contact', image: '', html: '' },
+    { badge: 'LIMITED TIME', title: 'Free Digital Forensics & Investigation Case Assessment', text: 'Discreet and lawful advisory for corporate fraud, device evidence recovery, and defensible court reporting.', btnText: 'Book Consultation', link: '#contact', image: '', html: '' },
+    { badge: 'FEATURED AUDIT', title: 'Cloud Security & ISO 27001 / SOC 2 Compliance Audit', text: 'Get audit-ready in 30 days with comprehensive gap analysis, actionable remediations, and expert support.', btnText: 'Get Protected', link: '#services', image: '', html: '' }
+  ]
+};
+site.wallpaperOpacity = site.wallpaperOpacity || { hero: 80, about: 80, services: 80, process: 80, frameworks: 80, feedback: 80, faq: 80, cta: 80, contact: 80, ads: 80 };
 site.feedbacks = Array.isArray(site.feedbacks) ? site.feedbacks : [
   { name: 'Aman Singhal', role: 'Head of IT, SecureFin', rating: 5, text: 'Secure-Connect conducted our annual VAPT audit. They identified critical security flaws and guided us through remediations seamlessly. Exceptional reporting!', avatar: '' },
   { name: 'Pooja Kulkarni', role: 'Co-Founder, DataStream', rating: 5, text: 'We consulted Secure-Connect for ISO 27001 readiness. The clarity in documentation and security audits made our compliance 100% stress-free.', avatar: '' },
@@ -167,27 +190,32 @@ app.get('/admin', (req, res) => {
 // ✅ Secret Hidden Admin URL (Sirf aapko pata hai)
 app.get(ADMIN_PATH, (req, res) => { 
   res.set({ 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow' }); 
-  res.type('html').send(adminHtml); 
+  res.type('html').send(getAdminHtml()); 
 });
 
 /* ---------- public API ---------- */
 app.post('/api/enquiry', (req, res) => {
-  if (limited('enq:' + req.ip, 20, 3600e3)) return res.status(429).json({ error: 'too many requests' });
+  if (limited('enq:' + req.ip, 30, 3600e3)) return res.status(429).json({ error: 'too many requests' });
   const b = req.body || {};
   const names = Object.values(site.services || {}).flat().map(s => s.name);
-  const service = str(b.service, 100);
-  if (!names.includes(service) || !str(b.name, 120) || !str(b.phone, 40)) return res.status(400).json({ error: 'invalid' });
+  let service = str(b.service, 100);
+  if (!service || (!names.includes(service) && service.toLowerCase() !== 'general enquiry')) {
+    service = 'General enquiry';
+  }
+  const name = str(b.name, 120);
+  if (!name) return res.status(400).json({ error: 'Name is required' });
+  const phone = str(b.phone, 40) || (b.pref === 'WhatsApp' ? 'Via WhatsApp' : (str(b.email, 160) || 'Not specified'));
   
   const item = {
     id: Date.now().toString(36) + crypto.randomBytes(3).toString('hex'), 
     ts: Date.now(), 
     status: 'new', 
     service,
-    name: str(b.name, 120), 
-    phone: str(b.phone, 40), 
+    name, 
+    phone, 
     email: str(b.email, 160), 
     org: str(b.org, 160), 
-    pref: str(b.pref, 40),
+    pref: str(b.pref, 40) || 'Website Form',
     fields: (Array.isArray(b.fields) ? b.fields : []).slice(0, 30).map(f => ({ l: str(f && f.l, 200), v: str(f && f.v, 2000) }))
   };
   
@@ -198,7 +226,7 @@ app.post('/api/enquiry', (req, res) => {
   for (const r of streams) {
     try { r.write('event: enquiry\ndata: ' + JSON.stringify(item) + '\n\n'); } catch (e) {}
   }
-  res.json({ ok: true });
+  res.json({ ok: true, item });
 });
 
 app.post('/api/feedback', (req, res) => {
